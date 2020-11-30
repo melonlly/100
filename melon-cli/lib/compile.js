@@ -1,5 +1,6 @@
 const fs = require('fs')
 const handlebars = require('handlebars');
+const chalk = require('chalk')
 
 /**
  * 模板编译
@@ -9,9 +10,10 @@ const handlebars = require('handlebars');
  */
 function compile(meta, filePath, templatePath) {
     if (fs.existsSync(templatePath)) {
-        const template = fs.readFileSync(templatePath)
+        const template = fs.readFileSync(templatePath).toString()
         const content = handlebars.compile(template)(meta)
         fs.writeFileSync(filePath, content)
+        console.log(chalk.red(`🚀${filePath} 创建成功`))
     }
 }
 
