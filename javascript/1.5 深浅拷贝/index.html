@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>1.5 深浅拷贝</title>
+    </head>
+    <body>
+        <script>
+            function deepClone(source = {}) {
+                const targetObj = source.constructor === Array ? [] : {}; // 判断复制的目标是数组还是对象
+                for (let keys in source) {
+                    // 遍历目标
+                    if (source.hasOwnProperty(keys)) {
+                        if (source[keys] && typeof source[keys] === "object") {
+                            // 如果值是对象，就递归一下
+                            targetObj[keys] =
+                                source[keys].constructor === Array ? [] : {};
+                            targetObj[keys] = deepClone(source[keys]);
+                        } else {
+                            // 如果不是，就直接赋值
+                            targetObj[keys] = source[keys];
+                        }
+                    }
+                }
+                return targetObj;
+            }
+        </script>
+
+        <script>
+            function createData(deep, breadth) {
+                var data = {};
+                var temp = data;
+
+                for (var i = 0; i < deep; i++) {
+                    temp = temp["data"] = {};
+                    for (var j = 0; j < breadth; j++) {
+                        temp[j] = j;
+                    }
+                }
+
+                return data;
+            }
+
+            createData(1, 3); // 1层深度，每层有3个数据 {data: {0: 0, 1: 1, 2: 2}}
+            createData(3, 0); // 3层深度，每层有0个数据 {data: {data: {data: {}}}}
+
+            // clone(createData(1000)); // ok
+            // clone(createData(10000)); // Maximum call stack size exceeded
+            // clone(createData(10, 100000)); // ok 广度不会溢出
+            // 当clone层级很深的话就会栈溢出，但数据的广度不会造成溢出
+
+            // 简单深拷贝
+            function cloneJSON(source) {
+                return JSON.parse(JSON.stringify(source));
+            }
+            try {
+                cloneJSON(createData(10000)); // Maximum call stack size exceeded
+            } catch (error) {
+                console.log(error);
+            }
+            // cloneJSON 内部使用了递归方式
+
+            /*
+                消除递归爆栈
+            */
+            function cloneLoop(x) {
+                const root = {};
+                // 栈
+                const loopList = [
+                    {
+                        parent: root,
+                        key: undefined,
+                        data: x,
+                    },
+                ];
+                while (loopList.length) {
+                    // 深度优先
+                    const { parent, key, data } = loopList.pop();
+
+                    // 初始化赋值目标，key为undefined则拷贝到父元素，否则拷贝到子元素
+                    let res = parent;
+                    if (typeof key !== "undefined") {
+                        res = parent[key] = {};
+                    }
+
+                    for (let k in data) {
+                        if (data.hasOwnProperty(k)) {
+                            if (typeof data[k] === "object") {
+                                // 下一次循环
+                                loopList.push({
+                                    parent: res,
+                                    key: k,
+                                    data: data[k],
+                                });
+                            } else {
+                                res[k] = data[k];
+                            }
+                        }
+                    }
+                }
+                return root;
+            }
+
+            var a = {};
+            a.a = a; // 循环引用对象
+            try {
+                cloneJSON(a); // Uncaught TypeError: Converting circular structure to JSON
+            } catch (error) {
+                console.log(error);
+            }
+
+            /*
+                破解引用丢失：拷贝检查
+                破解循环引用: 循环检测
+                    其他方法 - 消除尾递归
+            */
+            // 保持引用关系
+            function cloneForce(x) {
+                // =============
+                const uniqueList = []; // 用来去重
+                // =============
+
+                let root = {};
+
+                // 循环数组
+                const loopList = [
+                    {
+                        parent: root,
+                        key: undefined,
+                        data: x,
+                    },
+                ];
+
+                while (loopList.length) {
+                    // 深度优先
+                    const { parent, key, data } = loopList.pop();
+
+                    // 初始化赋值目标，key为undefined则拷贝到父元素，否则拷贝到子元素
+                    let res = parent;
+                    if (typeof key !== "undefined") {
+                        res = parent[key] = {};
+                    }
+
+                    // =============
+                    // 数据已经存在
+                    let uniqueData = find(uniqueList, data);
+                    if (uniqueData) {
+                        parent[key] = uniqueData.target;
+                        continue; // 中断本次循环
+                    }
+
+                    // 数据不存在
+                    // 保存源数据，在拷贝数据中对应的引用
+                    uniqueList.push({
+                        source: data,
+                        target: res,
+                    });
+                    // =============
+
+                    for (let k in data) {
+                        if (data.hasOwnProperty(k)) {
+                            if (typeof data[k] === "object") {
+                                // 下一次循环
+                                loopList.push({
+                                    parent: res,
+                                    key: k,
+                                    data: data[k],
+                                });
+                            } else {
+                                res[k] = data[k];
+                            }
+                        }
+                    }
+                }
+
+                return root;
+            }
+
+            function find(arr, item) {
+                for (let i = 0; i < arr.length; i++) {
+                    if (arr[i].source === item) {
+                        return arr[i];
+                    }
+                }
+
+                return null;
+            }
+        </script>
+    </body>
+</html>

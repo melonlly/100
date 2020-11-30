@@ -1,4 +1,5 @@
 const fs = require("fs");
+const { compile } = require("./compile");
 
 module.exports = async () => {
     // 1.获取

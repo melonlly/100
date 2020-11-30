@@ -10,7 +10,11 @@ const handlebars = require('handlebars');
 function compile(meta, filePath, templatePath) {
     if (fs.existsSync(templatePath)) {
         const template = fs.readFileSync(templatePath)
-        const handlebars = handlebars.compile(template)(meta)
-        fs.writeFileSync(filePath, handlebars)
+        const content = handlebars.compile(template)(meta)
+        fs.writeFileSync(filePath, content)
     }
+}
+
+module.exports = {
+    compile
 }

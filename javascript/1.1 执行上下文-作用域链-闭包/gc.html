@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>闭包 GC</title>
+
+        <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+    </head>
+    <body>
+        <button id="add">add</button>
+        <button id="clear">clear</button>
+
+        <script>
+            let Todo = (function createTodoFactory() {
+                function Todo(spec) {
+                    Object.assign(this, spec);
+                }
+
+                return function (spec) {
+                    let todo = new Todo(spec);
+                    return Object.freeze(todo);
+                };
+            })();
+
+            // 闭包
+            let add = (function createAddClosure() {
+                let arr = [];
+                return function (obj) {
+                    arr.push(obj);
+                };
+            })();
+
+            function addALotOfObjects() {
+                for (let i = 1; i <= 10000; i++) {
+                    add(new Todo(i));
+                }
+            }
+            function clearAllObjects() {
+                if (add) {
+                    add = null;
+                }
+            }
+            $("#add").click(addALotOfObjects);
+            $("#clear").click(clearAllObjects);
+        </script>
+    </body>
+</html>

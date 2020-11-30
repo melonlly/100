@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>1.6 事件机制/Event Loop</title>
+    </head>
+    <body>
+        <div id="con">this is con</div>
+        <script>
+            var t = 0;
+            var con = document.getElementById("con");
+
+            /*
+                ！渲染的基本流程：
+                    1. 处理 HTML 标记并构建 DOM 树。
+                    2. 处理 CSS 标记并构建 CSSOM 树， 将 DOM 与 CSSOM 合并成一个渲染树。
+                    3. 根据渲染树来布局，以计算每个节点的几何信息。
+                    4. 将各个节点绘制到屏幕上。
+            */
+
+            // con.onclick = function () {
+            //     // task
+            //     setTimeout(function setTimeout1() {
+            //         con.textContent = t;
+            //     }, 0);
+            // };
+            // setTimeout1是作为task运行的，可以看到paint确实是在task运行完后才进行的
+
+            // con.onclick = function () {
+            //     // microtask
+            //     Promise.resolve().then(function Promise1() {
+            //         con.textContext = 0;
+            //     });
+            // };
+            // Promise1是作为microtask运行的，paint也是在task运行完成后进行的
+
+            // con.onclick = function click1() {
+            //     setTimeout(function setTimeout1() {
+            //         con.textContent = 0;
+            //     }, 0);
+            //     setTimeout(function setTimeout2() {
+            //         con.textContent = 1;
+            //     }, 0);
+            // };
+            // Task: click1、setTimeout1、setTimeout2
+            // setTimeout1 和 setTimeout2之间未进行 paint ，浏览器将两次 paint 合并成了一次（最新一次）
+
+            // con.onclick = function () {
+            //     setTimeout(function setTimeout1() {
+            //         con.textContent = 0;
+            //         Promise.resolve().then(function Promise1() {
+            //             console.log("Promise1");
+            //         });
+            //     }, 0);
+            //     setTimeout(function setTimeout2() {
+            //         con.textContent = 1;
+            //         Promise.resolve().then(function Promise2() {
+            //             console.log("Promise2");
+            //         });
+            //     }, 0);
+            // };
+            // setTimeout1、setTimeout2应该运行在两次event loop中，textContent = 0的修改被跳过了
+
+            // 浏览器会尽量保持每秒60帧的刷新频率（大约16.7ms每帧），是否两次event loop间隔需要大于这个间隔？？？
+            // con.onclick = function () {
+            //     setTimeout(function setTimeout1() {
+            //         con.textContent = 0;
+            //     }, 0);
+            //     setTimeout(function setTimeout2() {
+            //         con.textContent = 1;
+            //     }, 16.7);
+            // };
+            // setTimeout1 和 setTimeout2 之间有 paint，是否说明以上问题？？？
+
+            // con.onclick = function () {
+            //     setTimeout(function () {
+            //         con.textContent = 0;
+            //     }, 0);
+            //     setTimeout(function () {
+            //         con.textContent = 1;
+            //     }, 0);
+            //     setTimeout(function () {
+            //         con.textContent = 2;
+            //     }, 0);
+            //     setTimeout(function () {
+            //         con.textContent = 3;
+            //     }, 0);
+            //     setTimeout(function () {
+            //         con.textContent = 4;
+            //     }, 0);
+            //     setTimeout(function () {
+            //         con.textContent = 5;
+            //     }, 0);
+            //     setTimeout(function () {
+            //         con.textContent = 6;
+            //     }, 0);
+            // };
+            // 两次event loop的间隔很短同样可能会进行绘制！
+
+            // 有说法是一轮event loop执行的microtask有数量限制（可能是1000），多余的microtask会放到下一轮执行？？？
+            // con.onclick = function () {
+            //     setTimeout(function setTimeout1() {
+            //         con.textContent = "task1";
+            //         for (var i = 0; i < 250000; i++) {
+            //             Promise.resolve().then(function () {
+            //                 con.textContent = i;
+            //             });
+            //         }
+            //     }, 0);
+            //     setTimeout(function setTimeout2() {
+            //         con.textContent = "task2";
+            //     }, 0);
+            // };
+            // 对microtasks增加数量限制，一个很大的作用是防止脚本运行时间过长，阻塞渲染。（微任务 flush 之后，才可能会进行渲染）
+
+            // var i = 0;
+            // var raf = function () {
+            //     requestAnimationFrame(function () {
+            //         con.textContent = i;
+            //         Promise.resolve().then(function () {
+            //             i++;
+            //             if (i < 3) raf(); // 若你想在浏览器下次重绘之前继续更新下一帧动画，那么回调函数自身必须再次调用window.requestAnimationFrame()
+            //         });
+            //     });
+            // };
+            // con.onclick = function () {
+            //     raf();
+            // };
+            // requestAnimationFrame 也是一个 task ，在它完成之后会运行 run microtasks
+            // 如果希望在每轮event loop都即时呈现变动，可以使用requestAnimationFrame！
+
+            // 验证 postMessage 是否是 task ？？？
+            setTimeout(function setTimeout1() {
+                console.log("setTimeout1");
+            }, 0);
+            var channel = new MessageChannel();
+            channel.port1.onmessage = function onmessage1() {
+                console.log("postMessage");
+                Promise.resolve().then(function promise1() {
+                    console.log("promise1");
+                });
+            };
+            channel.port2.postMessage(0);
+            setTimeout(function setTimeout2() {
+                console.log("setTimeout2");
+            }, 0);
+            console.log("sync");
+            /*
+                sync
+                postMessage
+                promise1
+                setTimeout1
+                setTimeout2
+            */
+
+            /*
+                如果task队列如果有大量的任务等待执行时，将dom的变动作为microtasks而不是task能更快的将变化呈现给用户！！！
+            */
+        </script>
+    </body>
+</html>

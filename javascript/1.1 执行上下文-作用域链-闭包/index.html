@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>1.1 执行上下文/作用域链/闭包</title>
+    </head>
+    <body>
+        <!--
+            首先会处理函数声明，其次会处理变量声明
+            如果如果变量名称跟已经声明的形式参数或函数相同，则变量声明不会干扰已经存在的这类属性
+        -->
+        <script>
+            console.log(foo); // func -> foo
+
+            function foo() {
+                console.log("foo");
+            }
+            var foo = 1;
+        </script>
+
+        <script>
+            console.log(bar); // func -> bar
+
+            var bar = 1;
+            function bar() {
+                console.log("bar");
+            }
+
+        </script>
+
+        <script>
+            function global() {
+                this.a = 'global'
+                function inner() {
+                    this.b = 'inner'
+                    // console.log(this)
+                }
+                inner()
+            }
+            console.log(global())
+        </script>
+
+    </body>
+</html>

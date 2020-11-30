@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>this/call/apply/bind</title>
+    </head>
+    <body>
+        <script>
+            // 构造函数如果显示返回 对象或函数 ，则不会返回新创建的实例，而是返回 对象或函数
+            class Test {
+                constructor() {
+                    console.log(new.target) // Test
+                    return {
+                        name: "Test",
+                    };
+                }
+            }
+            console.log(new Test());
+
+            function Melon() {
+                return function () {
+                    return "Melon";
+                };
+            }
+            console.log(new Melon());
+
+            function Xigua() {
+                return "Xigua";
+            }
+            console.log(new Xigua());
+        </script>
+
+        <script>
+            console.log(
+                "==========================================================="
+            );
+        </script>
+
+        <script>
+            function Foo() {
+                getName = function () {
+                    console.log(1);
+                };
+                return this;
+            }
+            Foo.getName = function () {
+                console.log(2);
+            };
+            Foo.prototype.getName = function () {
+                console.log(3);
+            };
+            var getName = function () {
+                console.log(4);
+            };
+            function getName() {
+                console.log(5);
+            }
+
+            //请写出以下输出结果：
+            Foo.getName(); // 2
+            getName(); // 4
+            Foo().getName(); // 1
+            getName(); // 1
+            new Foo.getName(); // 2
+            new Foo().getName(); // 3       -> Foo.prototype.getName
+            new new Foo().getName(); // 3   -> Foo.prototype.getName
+
+            /*
+                new Foo()
+                由于返回的是 this （对象），因此会返回该对象，而不会直接返回新创建的实例
+                初始时，该 this 指向全局对象，但是由于 new ，该 this 会在创建新实例后，指向这个新实例
+                所以依然会返回 新创建的实例
+            */
+        </script>
+
+        <script>
+            console.log(
+                "==========================================================="
+            );
+        </script>
+
+        <script>
+            /*
+                call 实现
+                    1. 改变了 this 指向
+                    2. 执行了 xxx 函数
+                    3. 参数列表 xxx.call(this, arg0, arg1, arg2, ...)
+                this 可能为 null
+                xxx 函数可能有返回值
+            */
+            function call1() {
+                var context = arguments[0] || window;
+                /*
+                    1. 保存当前调用 call 的函数 xxx ，即 this
+                    2. 当 context.fn 调用时，函数的 this 会指到新的上下文 context
+                */
+                context.fn = this;
+                var args = [];
+                if (arguments.length > 1) {
+                    for (var i = 1; i < arguments.length; i++) {
+                        args.push("arguments[" + i + "]");
+                    }
+                }
+                // Array.prototype.slice.call(arguments)
+                var result = eval("context.fn(" + args + ")");
+                delete context.fn;
+                return result;
+            }
+            Function.prototype.call1 = call1;
+            // apply
+            function apply1(context, arr) {
+                var context = context || window;
+                context.fn = this;
+                var result;
+                if (!arr) {
+                    result = context.fn();
+                } else {
+                    var args = [];
+                    for (var i = 0, len = arr.length; i < len; i++) {
+                        args.push("arr[" + i + "]");
+                    }
+                    result = eval("context.fn(" + args + ")");
+                }
+                delete context.fn;
+                return result;
+            }
+            Function.prototype.apply1 = apply1
+
+            /*
+                bind 实现
+                    1. 创建一个新的函数 xxx
+                    2. 会改变 this 指向
+                    3. 会保存参数列表 xxx.bind(this, arg0, arg1, arg2, ...)
+                    4. 调用绑定后的新函数，如果有参数，参数会继续添加到已保存的参数列表中
+            */
+            function bind1() {
+                var context = arguments[0] || window;
+                var self = this;
+                var args = [];
+                if (arguments.length > 1) {
+                    for (var i = 1; i < arguments.length; i++) {
+                        args.push(arguments[i]);
+                    }
+                }
+                return function () {
+                    for (var i = 0; i < arguments.length; i++) {
+                        args.push(arguments[i]);
+                    }
+                    return self.apply1(context, args)
+                };
+            }
+            Function.prototype.bind1 = bind1;
+
+            var a = 2;
+            var obj = {
+                a: 1,
+            };
+            function test(b = 0, c = 0) {
+                // console.log(this.a + b + c)
+                return this.a + b + c;
+            }
+
+            console.log(test(2, 3));
+            // call test
+            console.log(
+                "call test ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+            );
+            console.log(test.call(obj, 2, 3));
+            console.log(test.call1(obj, 2, 3));
+            console.log(test.call1(null, 2, 3, 4));
+            console.log(test.call1());
+
+            // bind test
+            console.log(
+                "bind test ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+            );
+            var test1 = test.bind(obj, 2);
+            console.log(test1(), test1(3));
+            var test2 = test.bind1(obj, 2, 3);
+            console.log(test2(4));
+            var test3 = test.bind1(obj, 2);
+            console.log(test3(), test3(3));
+            // 多次 bind
+            var test4 = test.bind(obj, 2);
+            var test44 = test4.bind(obj, 3);
+            console.log(test44(), test44(4));
+            var test5 = test.bind1(obj, 2)
+            var test55 = test5.bind1(obj, 3)
+            console.log(test55(), test55(4))
+        </script>
+    </body>
+</html>
