@@ -1,0 +1,63 @@
+<html>
+    <head>
+        <script src="./Dep.js"></script>
+        <script src="./compile.js"></script>
+        <script src="./Watcher.js"></script>
+        <script src="./Observer.js"></script>
+        <script src="./MVVM.js"></script>
+    </head>
+    <body>
+        <div id="app">
+            <input type="text" v-model="word" />
+            <!-- <p>{{ word }}</p>
+            <p>{{ obj.a }}</p> -->
+            <!-- <input type="text" v-model="obj.a" /> -->
+            <!-- <p>{{ obj.inner.a }}</p> -->
+            <!-- <button v-on:click="sayHi">change model</button> -->
+            <!-- <p>{{ caaa }}</p> -->
+            <!-- <p>{{ word }}</p>
+            <p>{{ cword }}</p> -->
+            <!-- <ul>
+                <li>{{ list[0] }}</li>
+                <li>{{ list[1] }}</li>
+                <li>{{ list[2] }}</li>
+            </ul> -->
+        </div>
+        <script>
+            var vm = new MVVM({
+                el: "#app",
+                data: {
+                    word: "Hello World!",
+                    // obj: {
+                        // a: 111,
+                        // inner: {
+                        //     a: 222
+                        // }
+                    // },
+                    // list: ['Item1', 'Item2', 'Item3']
+                },
+                methods: {
+                    // sayHi: function () {
+                    //     this.word = "Hi, everybody!";
+                    // },
+                },
+                /*
+                    computed的本质也是data属性
+                        其函数中包含的响应式数据发生变化，也会触发该函数
+                            原因：初始执行computed函数时，会分别触发所有依赖的响应式数据的 get，此时的 Dep.target 
+                */
+                computed: {
+                    // cword: observe({
+                    //     text: 123
+                    // }),
+                    // caaa() {
+                    //     return `${ this.word } --- ${ this.obj.a }`
+                    // },
+                    cword() {
+                        return `${ this.word } ----------------`
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>

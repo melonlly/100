@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>定位专题</title>
+</head>
+<body>
+
+    <pre>
+        静态定位 position：static
+            默认定位，不能使用top，bottom，left，right和z-index属性
+        相对定位 position: relative
+            会占用该元素在文档中初始的页面空间，通过left、right、top、bottom属性确定元素在正常文档流中的偏移位置，然后相对于以前的位置移动
+        绝对定位 position：absolute
+            不占用原来元素的空间，脱离文档流，形成独立的文档层，使用left、right、top、bottom属性相对于其最接近的一个具有定位属性的父级元素进行绝对定位
+        固定定位 position：fixed
+            直接以浏览器窗口作为参考进行定位，它是浮动在页面中，元素位置不会随浏览器窗口的滚动条滚动而变化
+    </pre>
+
+    <pre>
+        relative/absolute/left/top/z-index
+    </pre>
+    
+    <pre>
+
+        <b>position:absolute 与 float:left</b>
+            共性
+                包裹性：让元素inline-block化
+                破坏性：
+                    浮动的破坏性在于破坏内联盒模型链，致使高度塌陷
+                    absolute绝对定位不仅让高度塌陷，而且在DOM tree没有实体位置
+        
+        <b>为什么不建议使用absolute</b>
+            1.依赖父级定位
+            2.拓展性和容错性不强
+            3.破坏性
+
+        <b>常见absolute布局的替代实现方案</b>
+            1.使用margin进行定位，替代absolute
+        <b>缺点</b>：在处理动画的定位时，margin-xxx会产生更多的重绘和重排（会影响当前的整个文档层），而absolute只会影响其独立的文档层
+
+    </pre>
+
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Promise</title>
+</head>
+
+<body>
+
+	<script src="../assets/js/Q.js"></script>
+
+	<pre>
+		承接 Generator 应用3 - 流程控制管理
+			如果有一个多步骤操作非常耗时，采用回调函数会写成如下代码
+			step1(function (v1) {
+				step2(v1, function (v2) {
+					step3(v2, function (v3) {
+						step4(v3, function (v4) {
+							// v4
+						})
+					})
+				})
+			})
+
+			使用 Promise 改写
+				Q.fcall(step1)
+					.then(step2)
+					.then(step3)
+					.then(step4)
+					.then(function (v4) {
+						// v4
+					}, function (error) {
+						// error handler
+					})
+					.done()
+			
+			使用 Generator 函数进一步优化
+				function* longRunningTask() {
+					try {
+						var v1 = yield step1()
+						var v2 = yield step2(v1)
+						var v3 = yield step3(v2)
+						var v4 = yield step4(v3)
+						// v4 -> done
+					} catch (e) {
+						// handle error by step
+					}
+				}
+			
+			实际操作中，一般让 yield 语句返回 Promise 对象
+				function delay(ms) {
+					var deferred = Q.defer()
+					setTimeout(deferred.resolve, ms)
+					return deferred.promise
+				}
+				// 按 yield 顺序执行任务
+				function* f() {
+					yield delay(100)
+				}
+				// yield 执行并行任务
+				function* parallelDownloads() {
+					let [text1, text2] = yield [
+						taskA(),
+						taskB()
+					]
+					console.log(text1, text2)
+				}
+	</pre>
+
+	<script>
+		console.warn(`实现Promise！！！！！！！！！！！！！！！！`)
+		function MPromise(func) {
+			var self = this
+			self.status = 'Pending'
+			self.data = undefined; // Promise的值
+			self.onResolvedCallback = []; // Promise resolve回调函数集合
+			self.onRejectedCallback = []; // Promise reject回调函数集合
+
+			self.resolve = function (value) {
+				if (self.status === 'Pending') {
+					self.status = 'Resolved'
+					self.data = value
+					// 异步顺序执行 resolve 函数 - 模拟微任务
+					setTimeout(function () {
+						for (var i = 0; i < self.onResolvedCallback.length; i++) {
+							self.onResolvedCallback[i](value)
+						}
+					}, 0)
+				}
+			}
+			self.reject = function (reason) {
+				if (self.status === 'Pending') {
+					self.status = 'Rejected'
+					self.data = reason
+					// 异步顺序执行 reject 函数 - 模拟微任务
+					setTimeout(function () {
+						for (var i = 0; i < self.onRejectedCallback.length; i++) {
+							self.onRejectedCallback[i](reason)
+						}
+					}, 0)
+				}
+			}
+
+			try {
+				func(self.resolve, self.reject)
+			} catch (error) {
+				self.reject(error)
+			}
+		}
+		// 调用resolve和reject后，立即调用then
+		MPromise.prototype.then = function (onResolved, onRejected) {
+			var self = this;
+
+			// 根据标准，如果then的参数不是function，则我们需要忽略它
+			onResolved = typeof onResolved === 'function' ? onResolved : function (v) { return v };
+			onRejected = typeof onRejected === 'function' ? onRejected : function (r) { return r };
+
+			// 相当于下一步（resolve 或者 reject） - 个人理解
+			var resolved = function (resolve, reject) {
+				setTimeout(function () {
+					try {
+						var mp = onResolved(self.data)
+						if (mp instanceof MPromise) {
+							// 如果返回的还是 Promise，将继续调用
+							mp.then(resolve, reject)
+						} else {
+							// 如果不是，则为 Promise 的返回结果
+							resolve(mp)
+						}
+					} catch (e) {
+						reject(e)
+					}
+				}, 0)
+			}
+			var rejected = function (resolve, reject) {
+				setTimeout(function () {
+					try {
+						var mp = onRejected(self.data)
+						if (mp instanceof MPromise) {
+							mp.then(resolve, reject)
+						} else {
+							reject(mp)
+						}
+					} catch (e) {
+						reject(e)
+					}
+				}, 0)
+			}
+
+			// Promise对象存在以下三种状态，对三种状态采用不同处理
+			if (self.status === 'resolved') {
+				// 调用 onResolved
+				return new MPromise(function (resolve, reject) {
+					resolved(resolve, reject)
+				});
+			}
+
+			if (self.status === 'rejected') {
+				// 调用 onRejected - 逻辑和 onResolved 相同
+				return new MPromise(function (resolve, reject) {
+					rejected(resolve, reject)
+				});
+			}
+
+			if (self.status === 'pending') {
+				return new MPromise(function (resolve, reject) {
+					self.onResolvedCallback.push(function (value) {
+						resolved(resolve, reject)
+					})
+					self.onRejectedCallback.push(function (reason) {
+						rejected(resolve, reject)
+					})
+				});
+			}
+		}
+		// 发生异常后，调用catch
+		MPromise.prototype.catch = function (onErrorHandle) {
+			return this.then(null, onErrorHandle)
+		}
+	</script>
+
+	<pre>
+		Promise 特点
+			1. 对象的状态不受外界影响
+				Pending（进行中）
+				Resolved（已完成）
+				Rejected（已失败）
+			2. 一旦状态改变就不会再变
+		缺点
+			1. 无法取消 Promise
+			2. 如果不设置回调函数，Promise 内部的错误不会反应到外部
+			3. 当处于 Pending 状态时，无法知道当前具体进展到哪一个阶段（刚开始、即将完成）
+
+		resolve 函数
+			Pending -> Resolved
+			成功时调用，将异步操作结果，通过参数传递出去
+		reject 函数
+			Pending -> Rejected
+			失败时调用，将异常通过参数传递出去
+
+		then(resolved, rejected?)
+			返回的是一个新的 Promise 实例，因此可以采用链式调用的写法
+		
+		catch()
+			用于指定发生错误时的回调函数。
+			Promise 对象的错误有“冒泡”性，错误总会被catch捕获
+			如果Promise状态发生变化（不可再变），再抛出错误是无效的
+		
+		Promise.all()
+			将多个Promise实例包装成一个新的Promise实例（多个实例间是 && 的关系）
+		Promise.race()
+			将多个Promise实例包装成一个新的Promise实例（多个实例间是 || 的关系）
+		
+		Promise.resolve()
+			将现有对象转为 Promise 对象
+				var jsPromise = Promise.resolve($.ajax('/xxx.json')) // 将 jQuery 生成的 deferred 对象转为新的 Promise 对象
+			Promise.resolve('foo') == new Promise(resolve => resolve('foo'))
+		
+		Promise.reject()
+			将返回一个新的Promise实例，状态Rejected
+		
+		done()
+			如果以 then 或 catch 方法结尾，要是最好一个方法抛出错误，都可能无法捕捉到。为此，done总处于回调链最末端，保证抛出任何可能错误
+			asyncFunc().then(f1).catch(r2).then(f2).done()
+			<script>
+				console.warn(`实现 Promise.prototype.done`)
+				Promise.prototype.done = function (onResolved, onRejected) {
+					this.then(onResolved, onRejected)
+						.catch(function (reason) {
+							// 抛出一个全局错误
+							setTimeout(() => { throw reason }, 0)
+						})
+				}
+			</script>
+		
+		finally()
+			不管 Promise 实例最后状态如何都会执行
+			<script>
+				console.warn(`实现 Promise.prototype.finally`)
+				Promise.prototype.finally = function (callback) {
+					let P = this.constructor // Promise
+					return this.then(
+						value => P.resolve(callback()).then(() => value),
+						reason => P.resolve(callback()).then(() => { throw reason })
+					)
+				}
+			</script>
+				
+	</pre>
+
+	<pre>
+		Promise 应用
+			1. ajax 操作
+			<script>
+				var getJSON = function (url) {
+					return new Promise(function (resolve, reject) {
+						var client = new XMLHttpRequest()
+						client.open('GET', url)
+						client.responseType = 'json'
+						client.setRequestHeader("Accept", "application/json")
+						client.onreadystatechange = function () {
+							if (this.readyState !== 4) {
+								return
+							}
+							if (this.status === 200) {
+								resolve(this.response)
+							} else {
+								reject(new Error(this.statusText))
+							}
+						}
+					})
+				}
+			</script>
+	</pre>
+
+</body>
+
+</html>

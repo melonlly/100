@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>reactivity</title>
+</head>
+<body>
+    
+    <div id="app"></div>
+    <button id="btn">click</button>
+    <script src="./reactivity.js"></script>
+
+    <script>
+        const app = document.getElementById('app')
+        const btn = document.getElementById('btn')
+        const raw = {
+            name: 'melon',
+            age: 2
+        }
+        const state = reactive(raw)
+        const computedAge = computed(() => state.age * 2)
+        effect(() => {
+            app.innerHTML = `
+                <h1>${ state.name }</h1>
+                <h2>${ state.age }</h2>
+                <h3>${ computedAge.value }</h3>
+            `
+        })
+        btn.addEventListener('click', () => {
+            state.age += 1
+        })
+    </script>
+
+</body>
+</html>

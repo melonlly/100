@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>布局专题</title>
+    <link rel="stylesheet" href="../assets/css/base.css">
+
+    <style>
+        .vbody {
+            width: 600px;height: 800px;
+            background: #666666;
+            border: 2px solid red;
+        }
+        .vbody .blue {
+            background: blue;
+        }
+        .vbody .aquamarine {
+            background: aquamarine;
+        }
+        .vbody .aqua {
+            background: aqua;
+        }
+    </style>
+
+</head>
+<body>
+    
+    <pre>
+
+        <b>单列布局</b>
+            header、content、footer等宽
+            header和footer等宽，content略窄
+
+        <b>两列自适应布局</b>：一列由内容撑开，另一列撑满剩余宽度的布局方式
+            float + overflow：hidden
+            flexbox布局
+            <!-- grid布局 -->
+
+        <b>三列布局</b>：中间列自适应宽度，旁边两侧固定宽度
+            浮动布局
+            绝对定位布局
+            flexbox布局
+            table布局
+            <!-- grid布局 -->
+            圣杯布局
+            双飞翼布局
+
+        <b>粘连布局</b>
+            当content足够长
+            当content比较短
+
+        <b>等高布局</b>
+            利用正padding+负margin
+            利用背景图片
+            模仿table布局
+            使用边框和定位
+
+    </pre>
+
+    <div class="one">
+        <pre>
+            <b>单列布局 - header、content、footer等宽</b>
+        </pre>
+        <style>
+            .vbody .item-1 {
+                margin: 0 auto;
+                max-width: 500px;
+            }
+            .vbody .header-1 {
+                height: 100px;
+            }
+            .vbody .content-1 {
+                height: 400px;
+            }
+            .vbody .footer-1 {
+                height: 100px;
+            }
+        </style>
+        <div class="vbody">
+            <div class="item-1 blue header-1"></div>
+            <div class="item-1 aquamarine content-1"></div>
+            <div class="item-1 aqua footer-1"></div>
+        </div>
+    
+        <pre>
+            <b>单列布局 - header和footer等宽，content略窄</b>
+        </pre>
+        <style>
+            .vbody .item-2 {}
+            .vbody .header-2 {
+                height: 100px;
+            }
+            .vbody .content-2 {
+                margin: auto;
+                width: 500px;
+                height: 400px;
+            }
+            .vbody .footer-2 {
+                height: 100px;
+            }
+        </style>
+        <div class="vbody">
+            <div class="item-2 blue header-2"></div>
+            <div class="item-2 aquamarine content-2"></div>
+            <div class="item-2 aqua footer-2"></div>
+        </div>
+    </div>
+
+    <div class="two">
+        <pre>
+            <b>两列自适应布局 - float + overflow：hidden</b>
+                原理：创造BFC，BFC不会重叠浮动元素
+                普通两列布局：浮动 + 普通元素的margin
+        </pre>
+        <style>
+            .vbody.layout-2 {
+                height: 200px;
+            }
+            .vbody .left {
+                float: left;
+                margin-right: 20px;
+            }
+            .vbody .right {
+                overflow: hidden;
+                zoom: 1; /* 兼容IE6 */
+            }
+        </style>
+        <div class="vbody layout-2">
+            <div class="blue left">
+                <p>left</p>
+            </div>
+            <div class="aqua right">
+                <p>right</p>
+                <p>right</p>
+            </div>
+        </div>
+    
+        <pre>
+            <b>两列自适应布局 - flex布局</b>
+                垂直方向会撑满整个容器
+        </pre>
+        <style>
+            .vbody.layout-flex {
+                display: flex;
+                height: 200px;
+            }
+            .vbody .right-1 {
+                flex: 1;
+                margin-left: 20px;
+            }
+        </style>
+        <div class="vbody layout-flex">
+            <div class="blue left-1">
+                <p>left</p>
+            </div>
+            <div class="aqua right-1">
+                <p>right</p>
+                <p>right</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="three">
+        <pre>
+            <b>三栏布局 - 浮动布局</b>
+                注意：left和right需要写在center前，这导致left和right会优先加载
+                因此才演变出圣杯布局和双飞翼布局（双飞翼是圣杯的优化）
+                
+                由内容撑起高度
+        </pre>
+        <style>
+            .vbody.layout-3 {
+                height: 300px;
+            }
+            .vbody .left-3 {
+                float: left;
+                width: 80px;
+            }
+            .vbody .right-3 {
+                float: right;
+                width: 80px;
+            }
+            .vbody .center-3 {
+                margin: 0 80px;
+                overflow: hidden;
+            }
+        </style>
+        <div class="vbody layout-3">
+            <div class="aquamarine left-3">
+                <p>left</p>
+            </div>
+            <div class="aqua right-3">
+                <p>right</p>
+            </div>
+            <div class="blue center-3">
+                <p>center</p>
+                <p>center</p>
+                <p>center</p>
+            </div>
+        </div>
+    
+        <pre>
+            <b>三栏布局 - 绝对定位布局</b>
+                left center right 可随意顺序
+                由内容撑起高度
+        </pre>
+        <style>
+            .vbody.layout-4 {
+                height: 300px;
+                position: relative;
+            }
+            .vbody .left-4 {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 80px;
+            }
+            .vbody .right-4 {
+                position: absolute;
+                right: 0;
+                top: 0;
+                width: 80px;
+            }
+            .vbody .center-4 {
+                margin: 0 80px;
+                overflow: hidden;
+            }
+        </style>
+        <div class="vbody layout-4">
+            <div class="blue center-4">
+                <p>center</p>
+                <p>center</p>
+                <p>center</p>
+            </div>
+            <div class="aquamarine left-4">
+                <p>left</p>
+            </div>
+            <div class="aqua right-4">
+                <p>right</p>
+            </div>
+        </div>
+    
+        <pre>
+            <b>三栏布局 - flexbox布局</b>
+        </pre>
+        <style>
+            .vbody.layout-5 {
+                height: 300px;
+                display: flex;
+            }
+            .vbody .left-5 {
+                width: 80px;
+            }
+            .vbody .right-5 {
+                width: 80px;
+            }
+            .vbody .center-5 {
+                /* 撑满容器 */
+                flex: 1;
+            }
+        </style>
+        <div class="vbody layout-5">
+            <div class="aquamarine left-5">
+                <p>left</p>
+            </div>
+            <div class="blue center-5">
+                <p>center</p>
+                <p>center</p>
+                <p>center</p>
+            </div>
+            <div class="aqua right-5">
+                <p>right</p>
+            </div>
+        </div>
+
+        <pre>
+            <b>三栏布局 - table布局</b>
+        </pre>
+        <style>
+            .vbody.layout-6 {
+                height: 300px;
+                display: table;
+            }
+            .vbody .left-6 {
+                width: 80px;
+                display: table-cell;
+            }
+            .vbody .right-6 {
+                width: 80px;
+                display: table-cell;
+            }
+            .vbody .center-6 {
+                display: table-cell;
+            }
+        </style>
+        <div class="vbody layout-6">
+            <div class="aquamarine left-6">
+                <p>left</p>
+            </div>
+            <div class="blue center-6">
+                <p>center</p>
+                <p>center</p>
+                <p>center</p>
+            </div>
+            <div class="aqua right-6">
+                <p>right</p>
+            </div>
+        </div>
+
+        <pre>
+            <b>圣杯布局</b>
+                比较特殊的三列布局，dom结构可必须先写center部分（优先加载）
+                缺点：
+                    1.center部分的最小宽度不能小于left部分的宽度，否则会left部分掉到下一行
+                    2.靠内容填充高度，不能同时等高
+        </pre>
+        <style>
+            .vbody.layout-7 {
+                /* width: 50px; 此时会出现缺点-2 */
+                height: 300px;
+                padding: 0 80px;
+            }
+            .vbody .left-7 {
+                float: left;
+                width: 80px;
+                margin-left: -100%;
+                position: relative;
+                left: -80px;
+            }
+            .vbody .right-7 {
+                float: left;
+                width: 80px;
+                margin-left: -80px;
+                position: relative;
+                right: -80px;
+            }
+            .vbody .center-7 {
+                float: left;
+                width: 100%;
+            }
+        </style>
+        <div class="vbody layout-7">
+            <div class="blue center-7">
+                <p>center</p>
+                <p>center</p>
+                <p>center</p>
+            </div>
+            <div class="aquamarine left-7">
+                <p>left</p>
+            </div>
+            <div class="aqua right-7">
+                <p>right</p>
+            </div>
+        </div>
+
+        <pre>
+            <b>双飞翼布局</b>
+                解决了圣杯布局错乱问题，实现了内容与布局的分离。
+                缺点：
+                    1.增加了一层dom，增大了render tree生成的计算量
+        </pre>
+        <style>
+            .vbody.layout-8 {
+                height: 300px;
+                min-width: 320px; /* 2 * (left + right) */
+            }
+            .vbody .left-8 {
+                float: left;
+                width: 80px;
+                margin-left: -100%;
+            }
+            .vbody .right-8 {
+                float: left;
+                width: 80px;
+                margin-left: -80px;
+            }
+            .vbody .center-8 {
+                float: left;
+                width: 100%;
+            }
+            .vbody .center-8 .inner {
+                height: 200px;
+                margin: 0 80px;
+                background: yellowgreen;
+            }
+        </style>
+        <div class="vbody layout-8">
+            <div class="blue center-8">
+                <div class="inner">
+                    双飞翼布局
+                </div>
+            </div>
+            <div class="aquamarine left-8">
+                <p>left</p>
+            </div>
+            <div class="aqua right-8">
+                <p>right</p>
+            </div>
+        </div>
+
+        <pre>
+            <b>圣杯布局 vs 双飞翼布局</b>
+            1.都将center放到首位加载
+            2.三列浮动 + 负外边距 形成三列布局
+            区别
+                圣杯：left、right使用相对定位（负数）
+                双飞翼：center嵌入一个新的父级容器，利用左右外边距进行布局
+        </pre>
+
+    </div>
+
+    <div class="four">
+        <pre>
+            <b>等高布局 - 利用正padding + 负margin</b>
+        </pre>
+        <style>
+            .vbody.layout-7 {
+                height: 300px;
+                padding: 0 80px;
+            }
+            .vbody.layout-7.overflow-hidden {
+                overflow: hidden;
+            }
+            .vbody .left-7 {
+                float: left;
+                width: 80px;
+                margin-left: -100%;
+                position: relative;
+                left: -80px;
+            }
+            .vbody .right-7 {
+                float: left;
+                width: 80px;
+                margin-left: -80px;
+                position: relative;
+                right: -80px;
+            }
+            .vbody .center-7 {
+                float: left;
+                width: 100%;
+            }
+            .vbody .same-high {
+                padding-bottom: 100000px;
+                margin-bottom: -100000px;
+            }
+        </style>
+        <div class="vbody layout-7 overflow-hidden">
+            <div class="blue center-7">
+                <p>center</p>
+                <p>center</p>
+                <p>center</p>
+            </div>
+            <div class="aquamarine left-7 same-high">
+                <p>left</p>
+            </div>
+            <div class="aqua right-7 same-high">
+                <p>right</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

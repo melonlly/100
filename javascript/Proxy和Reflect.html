@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Proxy和Reflect</title>
+</head>
+<body>
+	
+	<pre>
+		Proxy
+			Proxy用于修改某些操作的默认行为（元编程 -> 对编程语言进行编程）
+	</pre>
+	<script>
+		var proxy = new Proxy({}, {
+			// target - 当前对象
+			// key - 主键
+			// receiver - 绑定get函数的this对象
+			get: function (target, key, receiver) {},
+			set: function (target, key, value, receiver) {},
+			// 拦截 key in proxy的操作，返回boolean
+			has: function (target, key) {}
+			/*
+				deleteProperty(target, key)		拦截 delete proxy[key]，返回boolean
+				enumerate(target)				拦截 for (var x in proxy)，返回Iterator
+				hasOwn(target, key)				拦截 proxy.hasOwnProperty(key)，返回boolean
+				ownKeys(target)
+					拦截 Object.getOwnPropertyNames(proxy)、Object.getOwnPropertySymbols(proxy)、Object.keys(proxy)
+						返回一个数组
+				getOwnPropertyDescriptor(target, key)
+					拦截 Object.getOwnPropertyDescriptor(proxy, key)，返回属性的描述对象
+				defineProperty(target, key, desc)
+					拦截 Object.defineProperty(proxy, key, desc)、Object.defineProperties(proxy, descs)
+						返回一个boolean
+				preventExtensions(target)		拦截 Object.preventExtensions(proxy), 返回一个boolean
+				getPrototypeOf(target)			拦截 Object.getPrototypeOf(proxy)，返回一个boolean
+				isExtensible(target)			拦截 Object.isExtensible(proxy)，返回一个boolean
+				setPrototypeOf(target, proto)	拦截 Object.setPrototypeOf(proxy, proto)，返回一个boolean
+				apply(target, object, args)
+					拦截 Proxy 实例作为函数调用的操作，如 proxy(...args)、proxy.call(object, ...args)、proxy.apply(...)
+				construct(target, args, proxy)
+					拦截 Proxy实例作为构造函数调用的操作，比如 new proxy(...args)
+			*/
+		})
+	</script>
+
+	<pre>
+		Reflect
+			设计目的
+				1. 将 Object 对象的一些明显属于语言层面的方法放到 Reflect 对象上
+				2. 修改某些 Object 方法的返回结果，使其更加合理（某方法在 Object 和 Reflect 上都存在时，使用 Reflect 上的
+				3. 让 Object 操作都变成函数行为
+					name in obj 		改为	Reflect.has(obj, name)
+					delete obj[name] 	改为	Reflect.deleteProperty(obj, name)
+				4. Reflect 对象的方法与 Proxy 对象的方法一一对应
+					Proxy 对象可以方便的调用对应的 Reflect 方法完成默认行为
+	</pre>
+
+</body>
+</html>

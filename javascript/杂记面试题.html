@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>杂记面试题</title>
+</head>
+
+<body>
+
+	<script>
+		function Foo() {
+			getName = function () { console.log(1); };
+			return this;
+		}
+		Foo.getName = function () { console.log(2); };
+		Foo.prototype.getName = function () { console.log(3); };
+		var getName = function () { console.log(4); };
+		function getName() { console.log(5); }
+
+		//请写出以下输出结果：
+		Foo.getName();          //第一题 ?	2
+		getName();              //第二题 ?	4
+		Foo().getName();        //第三题 ?	1
+		getName();              //第四题 ?	1
+		new Foo.getName();      //第五题 ?	2
+		new Foo().getName();    //第六题 ?	3
+		new new Foo().getName();//第七题 ?	1 -> 3		new ((new Foo()).getName)()
+
+	</script>
+
+</body>
+
+</html>

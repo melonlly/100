@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>ES6</title>
+</head>
+<body>
+	
+	<script>
+		const engines = new Set(["Gecko", "Trident", "Webkit", "Webkit"])
+		for (const e of engines) {
+			console.log(e)
+		}
+
+		// const es6 = new Map()
+		// es6.set("edition", 6)
+		// es6.set("committee", "TC39")
+		// es6.set("standard", "ECMA-262")
+		const es6 = new Map().set("edition", 6).set("committee", "TC39").set("standard", "ECMA-262")
+		for (const [key, value] of es6) {
+			console.log(`[ ${key}, ${value} ]`)
+		}
+	</script>
+
+	<pre>
+		<script>
+			var es7 = {
+				edition: 7,
+				committee: "TC40",
+				standard: "ECMA-263"
+			}
+		</script>
+		使用for-of遍历普通对象
+			只有部署了Iterator接口才能使用
+			for-in依然可以遍历键名
+
+		1.使用Object.keys()将对象的键名生成一个数组，遍历该数组
+		<script>
+			for (const key of Object.keys(es7)) {
+				console.log(`${key} -> ${es7[key]}`)
+			}
+		</script>
+		2.对象上部署Iterator接口
+			两种方式：
+				a. 自定义Iterator
+				b. 借用数组的Symbol.Iterator属性
+		<script>
+			// 自定义Iterator
+			console.warn('自定义Iterator')
+			es7[Symbol.iterator] = function () {
+				let index = 0
+				const self = this
+				return {
+					next() {
+						if (index < Object.keys(self).length) {
+							return {
+								value: Object.keys(self)[index++],
+								done: false
+							}
+						} else {
+							return {
+								value: undefined,
+								done: true
+							}
+						}
+					}
+				}
+			}
+			for (const key of es7) {
+				console.log(key)
+			}
+
+			// 借用数组的Symbol.Iterator属性 - 适用于需要new的对象
+			console.warn('借用数组的Symbol.Iterator属性 - 适用于需要new的对象')
+			class es8 {
+				edition = 8
+				committee = "TC41"
+				standard = "ECMA-264"
+			}
+			es8.prototype[Symbol.iterator] = Array.prototype[Symbol.iterator]
+			const es8Ins = new es8()
+			for (const key of es8Ins) {
+				console.log(key)
+			}
+		</script>
+		3.使用Generator函数包装对象
+		<script>
+			var es9 = {
+				edition: 9,
+				committee: "TC41",
+				standard: "ECMA-264"
+			}
+			console.warn('使用Generator函数包装对象')
+			function* entries(obj) {
+				for (let key of Object.keys(obj)) {
+					yield [key, obj[key]]
+				}
+			}
+			for (const [key, value] of entries(es9)) {
+				console.log(`${key} -> ${value}`)
+			}
+		</script>
+	</pre>
+
+	<pre>
+		Generator
+			状态机
+			遍历器对象生成函数
+			next()方法的参数表示上一条yield语句的返回值，所以第一次使用next方法时不能带有参数
+			for-of循环可以自动遍历Generator函数
+	</pre>
+	<script>
+		console.warn(`Generator实现fibonacci数列`)
+		function* fibonacci() {
+			let [prev, curr] = [0, 1]
+			for (;;) {
+				[prev, curr] = [curr, prev + curr]
+				yield curr
+			}
+		}
+		for (let n of fibonacci()) {
+			if (n > 10) break
+			console.log(n)
+		}
+	</script>
+	<script>
+		console.warn(`使用Generator给js对象添加遍历接口`)
+		function* objEntries() {
+			// let keys = Reflect.ownKeys(obj)
+			let keys = Object.keys(this)
+			for (const key of keys) {
+				yield [key, this[key]]
+			}
+		}
+		console.warn(`可以将具有遍历能力的Generator函数添加到对象的Symbol.iterator属性`)
+		let jane = { first: 'Hello', last: 'World' }
+		jane[Symbol.iterator] = objEntries
+		console.log(...jane)
+	</script>
+
+	<pre>
+		Generator 应用
+			1. Generator 与状态机
+			<script>
+				// es5 实现状态机
+				var ticking = true
+				var clock_es5 = function () {
+					ticking ? console.log('Tick!') : console.log('Tock!')
+					ticking = !ticking
+				}
+				console.warn(`es5 实现状态机 clock_es5 函数有两种状态（Tick 和 Tock），每运行一次，改变一次状态`)
+				// es6 实现状态机
+				const clock_es6 = function* (_) {
+					while (true) {
+						yield _
+						console.log('Tick!')
+						yield _
+						console.log('Tock!')
+					}
+				}
+				console.warn(`es6 实现的状态机相对于 es5 的实现，少了保存状态的外部变量 ticking，这样更安全，符合函数式编程的思想。 Generator 本身就包含了 '目前是否处于暂停状态' 的状态信息 `)
+			</script>
+
+			2. Generator 与协程
+				协程（coroutine）：一种程序的运行方式，“协作的线程” 或 “协作的函数”。
+					可以通过单线程实现 -> 特殊的子例程
+					可以用多线程实现   -> 特殊的线程
+				协程 & 子例程 的差异
+					子例程（subroutine）采用堆栈式（FIFO），子函数完全执行完毕，父函数才会执行
+					协程，多个线程（单线程时即多个函数），并行执行，但只有一个线程（或函数）处于正在运行的状态，其他处于暂停状态，线程（或函数）之间可以交换执行权
+						这种可以并行执行、互相交换执行权的线程（或函数），称为协程
+					内存中实际情况：
+						子例程只使用一个栈
+						协程是同时存在多个栈，但只有一个栈在运行态（空间换时间）
+				协程 & 普通线程 的差异
+					相同
+						自己的执行上下文，可以共享全局变量
+					不同
+						同一时间可以有多个线程处于运行态，协程只有一个
+						普通线程时抢占式（运行环境决定），协程是合作式（执行权由协程自行分配）
+				Generator 函数是 es6 对协程的实现（不完全实现，“半协程”），只有 Generator 函数的调用者才能将程序的执行权还给 Generator 函数
+					（完全实现的协程，任何函数都可以让暂停的协程继续执行）
+					实现协程：将多个需要互相协作的任务写成 Generator 函数，通过使用 yield 语句交换控制权
+			
+			3. 流程控制管理
+				见 Promise.html
+	</pre>
+
+	<pre>
+		async-await 对于 Generator 函数的改进
+			1. 内置执行器
+				Generator 函数本身是状态机，只维护各种状态，需要提供执行器才能执行（所以出现了 co 模块）
+				而 async 函数自带执行器，自身既是状态机，又是执行器
+			2. 更好的语义
+				相比 Generator 的 * 和 yield ，async 和 await 更符合语义
+			3. 更广的适用性
+				co 模块约定，yield 命令后只能是 Thunk 函数或 Promise 对象
+				但 await 命令后可以是 Promise 对象或原始类型的值（此时等同于同步操作）
+			4. 返回值是Promise
+				而 Generator 函数的返回值是 Iterator
+	</pre>
+	<script>
+		/*
+			async function fn(args) { ... }
+			// 等同于
+			function fn(args) {
+				return spawn(function*() {
+					...
+				})
+			}
+		*/
+		console.warn(`实现async`)
+		function spawn(genF) {
+			return new Promise(function (resolve, reject) {
+				var gen = genF() // Genterator
+
+				// 将每一次next转化为Promise操作
+				function step(nextF) {
+					try {
+						var next = nextF()
+					} catch (e) {
+						return reject(e)
+					}
+					if (next.done) {
+						return resolve(next.value)
+					}
+					Promise.resolve(next.value).then(function (v) {
+						step(function () {
+							return gen.next(v)
+						})
+					}, function (e) {
+						step(function () {
+							return gen.throw(e)
+						})
+					})
+				}
+
+				step(function() {
+					return gen.next()
+				})
+			})
+		}
+	</script>
+
+	<pre>
+		class Mixin 模式
+		<script>
+			console.warn('class Mixin 模式')
+			function mix(...mixins) {
+				class Mix {}
+				for (const mix of mixins) {
+					copyProperties(Mix, mix)
+					copyProperties(Mix.prototype, mix.prototype)
+				}
+				return Mix
+			}
+			function copyProperties(target, source) {
+				for (const key of Reflect.ownKeys(source)) {
+					if (key !== "constructor" && key !== "prototype" && key !== "name") {
+						let desc = Object.getOwnPropertyDescriptor(source, key)
+						Object.defineProperty(target, key, desc)
+					}
+				}
+			}
+			console.log(`class C extends mix(A, B) { ... }`)
+		</script>
+		<script>
+			console.warn(`使用装饰器的Mixin模式`)
+			function mixins(...list) {
+				return function (target) {
+					Object.assign(target.prototype, ...list)
+				}
+			}
+			/*
+				@mixins(A)
+				class B {}
+				将 A 混入 B
+			*/
+		</script>
+	</pre>
+
+</body>
+</html>

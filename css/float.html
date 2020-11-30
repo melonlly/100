@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>浮动专题</title>
+</head>
+<body>
+    
+    <pre>
+        浮动float的原始意义
+            实现文字环绕图片（仅此而已）
+
+        float的本质
+            包裹性：带方位的行内元素属性display：inline-block
+            破坏性：浮动会破坏了正常的line boxes
+        什么是line boxes模型
+            如下案例：
+    </pre>
+
+    <p>这是一行普通的文字，这里有个 <em>em</em> 标签。</p>
+    <pre>
+        1.<p>在containing box，此box包含了其他的boxes
+        2.<p>中元素则是一个个的inline boxes（包括文本片段，如上则是三个inline boxes）
+        3.在containing boxes里，一个个inline boxes组成了line boxes
+        4.content area是一种围绕文字看不见的box，其大小和font-size有关
+    </pre>
+
+    <pre>
+        清除浮动
+            1.子元素中添加冗余元素（一般使用伪元素）clear: both|left|right
+            2.父元素创建BFC
+        
+        <b>BFC 块级格式化上下文</b>
+            1.内部的boxes会在垂直方向，从顶部一个个放置
+            2.box垂直方向的距离由margin决定。属于同一个BFC的两个相邻Box的margin会发生叠加（非BFC时，margin会取较大的那一个）
+            3.BFC区域不会和float box叠加
+            4.BFC是DOM里一个隔离的独立容器，内外不会互相影响
+            5.计算BFC高度时，浮动元素也参与计算
+        个人理解的BFC
+            当某些特定条件触发时，
+        如何创建BFC
+            1.浮动 float不为none
+            2.绝对定位元素
+            3.display：inline-block
+            4.表格单元格 display：table-cell
+            5.表格标题 display：table-caption
+            6.overflow不为visible
+            7.弹性盒子flex boxes（display：flex|inline-flex）
+        如下案例：
+    </pre>
+
+    <style>
+        .float-box {
+            display: inline-block;
+            width:200px; margin:0 auto; border:2px solid green;
+            /* overflow: hidden; */
+        }
+        .div{
+            float: left;
+            width:30px; height:20px; background:yellowgreen; margin-left: 10px;
+        }
+    </style>
+
+    <div class="float-box">
+        <div class="div">1</div>
+        <div class="div">2</div>
+        <div class="div">3</div>
+    </div>
+
+</body>
+</html>

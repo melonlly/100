@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Symbol</title>
+</head>
+<body>
+	
+	<pre>
+		原始数据类型：undefined null number boolean string Object Symbol
+		Symbol -> 独一无二的值
+
+		当Symbol做为属性值时，
+			该属性不会出现在for-in、for-of循环中，也不会被Object.keys()、Object.getOwnPropertyNames()返回
+			它也不是私有属性
+		通过Object.getOwnPropertySymbols()可以获取所有的Symbol属性名
+		通过Reflect.ownKeys()可以返回所有类型的键名（常规键名和Symbol键名）
+		<script>
+			let obj = {
+				[Symbol('key')]: 1,
+				a: 2,
+				b: 3
+			}
+			console.log(Reflect.ownKeys(obj))
+		</script>
+	</pre>
+
+	<pre>
+		Symbol.for() -> 重新使用同一个Symbol值
+		<script>
+			console.log(`Symbol.for('bar') === Symbol.for('bar') -> ${Symbol.for('bar') === Symbol.for('bar')}`)
+		</script>
+
+		Symbol.iterator -> 指向对象的默认遍历器方法，对象在进行 for-of 循环时会调用这个方法，返回该对象的默认遍历器
+	</pre>
+
+</body>
+</html>

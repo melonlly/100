@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>模块化</title>
+</head>
+<body>
+	
+	<pre>
+		es6之前，主要有 CommonJs（服务器） 和 AMD/CMD （浏览器）
+
+		es6模块不是对象，而是 export / import 命令，“编译时加载”，编译时就能确定模块间依赖关系，比 CommonJS 模块加载效率高
+			因为 CommonJS 和 AMD/CMD 都是对象，只能在运行时确定该对象，以及确定模块依赖关系
+	</pre>
+
+	<pre>
+		es6模块自动采用严格模式
+	</pre>
+
+	<pre>
+		CommonJS 模块输出的是一个值的拷贝
+		es6 模块输出的是值的引用
+	</pre>
+
+</body>
+</html>

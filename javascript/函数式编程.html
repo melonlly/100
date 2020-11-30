@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>函数式编程</title>
+</head>
+
+<body>
+
+	<pre>
+		柯里化 && 反柯里化
+	</pre>
+	<pre>
+		柯里化
+			逐步接收参数，缓存供后期计算使用
+			延时执行
+			符合执行时机时，将缓存的所有参数，统一传递给执行方法
+		<script>
+			console.warn(`实现柯里化函数，并将add函数柯里化		add(1)(2, 3)(4)() = 10`)
+			function curry(fn) {
+				var allArgs = []
+				return function inside() {
+					var args = [].slice.call(arguments)
+					if (args.length > 0) {
+						allArgs = allArgs.concat(args)
+						return inside
+					} else {
+						return fn.apply(null, allArgs)
+					}
+				}
+			}
+			var add = curry(function () {
+				var sum = 0;
+				for (var i = 0; i < arguments.length; i++) {
+					sum += arguments[i];
+				}
+				return sum;
+			})
+			console.log(`add(1)(2, 3)(4)() = ${add(1)(2, 3)(4)()}`)
+		</script>
+	</pre>
+	<pre>
+		反柯里化
+			将XXX对象的方法，摘出来单独使用（避免了访问了XXX对象）
+			拓展被反柯里化函数的参数
+		<script>
+			console.warn(`反柯里化实现方案 1 - 将第一个参数作为原函数的this`)
+			function unCurry(fn) {
+				return function () {
+					var args = [].slice.call(arguments)
+					var that = args.shift()
+					return fn.apply(that, args)
+				}
+			}
+			var my_indexOf = unCurry(Array.prototype.indexOf)
+			console.log(`my_indexOf([1, 2, 3], 2) = ${my_indexOf([1, 2, 3], 2)}`)
+		</script>
+		<script>
+			console.warn(`反柯里化实现方案 2 - from Q.js`)
+			function unCurryQ(fn) {
+				return function () {
+					return Function.call.apply(fn, arguments)
+				}
+			}
+			var my_indexOfQ = unCurryQ(Array.prototype.indexOf)
+			console.log(`my_indexOfQ([1, 2, 3], 2) = ${my_indexOfQ([1, 2, 3], 2)}`)
+			console.log(`Function.call.apply([].indexOf, arguments) === [].indexOf.call(arguments)`)
+			console.log(`Function.call.apply(xxx.fn, arguments) === xxx.fn.call(arguments)`)
+		</script>
+	</pre>
+
+
+</body>
+
+</html>
