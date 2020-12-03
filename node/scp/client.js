@@ -157,29 +157,11 @@ Client.prototype.write = function (options, callback) {
     var self = this;
 
     this.sftp(function (err, sftp) {
-        // var _write = function (handle) {
-        //     self.emit("write", options);
-        //     try {
-        //         sftp.write(handle, content, 0, content.length, 0, function (err) {
-        //             var writeErr = err;
-        //             console.error(err);
-        //             sftp.close(handle, function (err) {
-        //                 callback(err || writeErr);
-        //             });
-        //         });
-        //     } catch (error) {
-        //         console.error(error);
-        //     }
-        // };
 
         console.log(destination);
         sftp.open(destination, "w", attrs, function (err, handle) {
             try {
                 const ws = sftp.createWriteStream(destination);
-                // ws.write(content, '', () => {
-                //     console.log(`sftp.stream.write~~~`);
-                //     self.emit("write", options)
-                // })
                 if (content && content.length) {
                     const step = 5000; // 分片大小
                     let start = 0; // 起始位置
@@ -228,26 +210,6 @@ Client.prototype.write = function (options, callback) {
                 console.error(error);
             }
         });
-
-        // sftp.open(destination, "w", attrs, function (err, handle) {
-        //     console.error(err, handle.length, handle.toString());
-        //     if (err) {
-        //         // destination is directory
-        //         destination = path.join(
-        //             destination,
-        //             path.basename(options.source)
-        //         );
-        //         destination = unixy(destination);
-
-        //         // for emit write event
-        //         options.destination = destination;
-        //         sftp.open(destination, "w", attrs, function (err, handle) {
-        //             _write(handle);
-        //         });
-        //     } else {
-        //         _write(handle);
-        //     }
-        // });
     });
 };
 
