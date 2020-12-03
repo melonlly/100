@@ -8,8 +8,10 @@
     </ul>
     <router-view></router-view>
 
-    <h1 @click="$store.commit('add')">{{ $store.state.counter }}</h1>
-    <h1 @click="$store.dispatch('add')">{{ $store.state.counter }}</h1>
+    <h1 @click="$store.commit('add')">commit - add - {{ $store.state.counter }}</h1>
+    <h1 @click="$store.dispatch('add')">dispatch - add - {{ $store.state.counter }}</h1>
+    <h1 @click="$store.commit('innerAdd')">commit - innerAdd - {{ $store.state.outter.inner.aaa }}</h1>
+    <h1>getters - counter100 - {{ $store.getters.counter100 }}</h1>
 
     <HelloWorld msg="Welcome to Your Vue.js App"/>
   </div>

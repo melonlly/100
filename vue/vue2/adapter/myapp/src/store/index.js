@@ -8,21 +8,36 @@ Vue.use(Vuex)
 // 2.Vuex.Store
 export default new Vuex.Store({
   state: {
-    counter: 0
+    counter: 0,
+    outter: {
+      aaa: 321,
+      inner: {
+        aaa: 123
+      }
+    }
   },
   mutations: {
     add(state) {
       state.counter++
-      console.log(state)
+    },
+    outterAdd(state) {
+      state.outter.aaa++
+    },
+    innerAdd(state) {
+      state.outter.inner.aaa++
     }
   },
   actions: {
-    add({commit}) {
+    add({commit}, payload) {
+      console.log(`actions -> add -> ${ payload }`);
       setTimeout(() => {
         commit('add')
       }, 500)
     }
   },
-  modules: {
+  getters: {
+    counter100(state) {
+      return state.counter * 100
+    }
   }
 })
