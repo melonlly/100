@@ -1,5 +1,9 @@
 var client = require('./scp')
 
+const host = '172.31.223.138'
+const username = 'root'
+const password = 'Cbswk@223'
+
 let type = process.argv.slice(2)
 if (type.length) {
     type = type[0]
@@ -18,9 +22,6 @@ switch(type) {
         break
 }
 
-const host = '172.31.223.138'
-const username = 'root'
-const password = 'Cbswk@223'
 let path = targetDir
 if (path) {
     client.scp(sourceDir, {

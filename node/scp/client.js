@@ -118,7 +118,6 @@ Client.prototype.mkdir = function (dir, attrs, callback) {
 
         async.until(
             function () {
-                console.log(exists);
                 return exists;
             },
             function (done) {
@@ -158,40 +157,77 @@ Client.prototype.write = function (options, callback) {
     var self = this;
 
     this.sftp(function (err, sftp) {
-        var _write = function (handle) {
-            self.emit("write", options);
-            console.log(`sftp.write~~~ ${ handle }`);
-            try {
-                sftp.write(handle, content, 0, content.length, 0, function (err) {
-                    var writeErr = err;
-                    console.error(err);
-                    sftp.close(handle, function (err) {
-                        callback(err || writeErr);
-                    });
-                });
-            } catch (error) {
-                console.error(error);
-            }
-        };
+        // var _write = function (handle) {
+        //     self.emit("write", options);
+        //     try {
+        //         sftp.write(handle, content, 0, content.length, 0, function (err) {
+        //             var writeErr = err;
+        //             console.error(err);
+        //             sftp.close(handle, function (err) {
+        //                 callback(err || writeErr);
+        //             });
+        //         });
+        //     } catch (error) {
+        //         console.error(error);
+        //     }
+        // };
 
         console.log(destination);
         sftp.open(destination, "w", attrs, function (err, handle) {
             try {
-                const ws = sftp.createWriteStream(destination)
+                const ws = sftp.createWriteStream(destination);
                 // ws.write(content, '', () => {
                 //     console.log(`sftp.stream.write~~~`);
                 //     self.emit("write", options)
                 // })
-                ws.end(content, '', () => {
-                    console.log(`${ destination } 传输完成`);
-                    sftp.close(handle, function (err) {
-                        callback(err || '');
-                    })
-                })
+                if (content && content.length) {
+                    const step = 5000; // 分片大小
+                    let start = 0; // 起始位置
+                    let end = 0; // 结束位置
+                    let len = content.length
+                    async.until(
+                        function () {
+                            if (end >= len) {
+                                ws.end("", "", () => {
+                                    console.log(`${destination} 传输完成`);
+                                    sftp.close(handle, function (err) {
+                                        callback(err || "");
+                                    });
+                                });
+                            }
+                            return end >= len;
+                        },
+                        function (done) {
+                            start = end;
+                            end =
+                                start + step > len
+                                    ? len
+                                    : start + step;
+                            let slice = content.slice(start, end);
+                            ws.write(slice, "", () => {
+                                self.emit("write", options);
+                                done();
+                            });
+                        },
+                        function (err) {
+                            if (err) {
+                                console.error(err);
+                                callback(err);
+                            }
+                        }
+                    );
+                } else {
+                    ws.end(content, "", () => {
+                        console.log(`${destination} 传输完成`);
+                        sftp.close(handle, function (err) {
+                            callback(err || "");
+                        });
+                    });
+                }
             } catch (error) {
                 console.error(error);
             }
-        })
+        });
 
         // sftp.open(destination, "w", attrs, function (err, handle) {
         //     console.error(err, handle.length, handle.toString());
@@ -241,7 +277,7 @@ Client.prototype.upload = function (src, dest, callback) {
                 }
             },
             function (callback) {
-                console.log(`write~~~ ${ _buffer.length }`);
+                console.log(`write~~~ ${_buffer.length}`);
                 self.write(
                     {
                         source: src,
