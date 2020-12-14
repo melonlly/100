@@ -22,7 +22,8 @@ module.exports = () => {
             break;
         case "renbao":
             sourceDir = `D:/workspace/voiceprint/Ele_Fraud/dist/`;
-            targetDir = `/mnt/renbao/Test/dist_test/`;
+            // targetDir = `/mnt/renbao/Test/dist_test/`;
+            targetDir = `/mnt/renbao/Test/dist/`;
             break;
     }
 
