@@ -2,12 +2,15 @@
   "name": "melon-scp",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "scp": "melon-scp renbao"
   },
   "bin": {
     "melon-scp": "./bin/index.js"
+  },
+  "engines": {
+    "node": ">=6"
   },
   "keywords": [],
   "author": "",
