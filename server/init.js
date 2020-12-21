@@ -1,6 +1,7 @@
-const Router = require('koa-router');
-let load = require("./utils/load");
-load = load(__dirname)
+const Router = require("koa-router");
+const logger = require("./middleware/LoggerMiddleware")
+let { load, getPathSeparator } = require("./utils/load");
+load = load(__dirname);
 
 const initController = () => {
     const controllers = {};
@@ -13,15 +14,32 @@ const initController = () => {
 const initRouter = () => {
     const router = new Router();
     load("routes", (filename, routes) => {
-        routes = typeof routes === "function" ? routes.app : routes;
-        const prefix = filename === "index" ? "" : `/${filename}`;
+        const separator = getPathSeparator();
+        let relativePath = filename.split(`routes${separator}`)[1];
+        if (relativePath.indexOf(separator) > -1) {
+            relativePath = relativePath.split(separator);
+        } else {
+            relativePath = [relativePath];
+        }
+        const name = relativePath.pop(); // 文件名称
+        let prePath = relativePath
+            .map((path) => {
+                if (path == "root") {
+                    path = "/";
+                } else {
+                    path = "/" + path;
+                }
+                return path;
+            })
+            .join("");
+        prePath = prePath == "/" ? "" : prePath;
         Object.keys(routes).forEach((key) => {
             const [method, path] = key.split(" ");
             console.log(
-                `正在映射地址: ${method.toLocaleUpperCase()}${prefix}${path}`
+                `正在映射地址: ${method.toLocaleUpperCase()} ${prePath}${path}`
             );
             // 注册路由
-            router[method](prefix + path, routes[key]);
+            router[method](prePath + path, logger(), routes[key]);
         });
     });
     return router;
