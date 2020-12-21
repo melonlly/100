@@ -1,0 +1,58 @@
+<html>
+    <head>
+        <title>文件相关</title>
+    </head>
+    <body>
+        <script>
+            const data = {};
+            function onFileChange(fileInput) {
+                const file = fileInput.files[0];
+                console.log(file);
+                data.file = file;
+            }
+            // 提交
+            function submit() {
+                const headers = new Headers();
+                // headers.append("Content-Type", "application/json");
+                const formData = new FormData();
+                formData.append("file", data.file);
+                formData.append("msg", "melon");
+                console.log(formData);
+                fetch("http://localhost:3000/file/upload", {
+                    method: "post",
+                    mode: "cors",
+                    headers: headers,
+                    body: formData,
+                })
+                    .then((res) => {
+                        console.log(res);
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+                return false;
+            }
+        </script>
+        <script>
+            // fetch
+            fetch("http://localhost:3000/")
+                .then((res) => res.json())
+                .then((res) => {
+                    console.log(res);
+                });
+        </script>
+
+        <!-- dom -->
+        <p>
+            <input
+                type="file"
+                name="file"
+                id="file"
+                accept="*.*"
+                multiple="false"
+                onchange="onFileChange(this)"
+            />
+        </p>
+        <button type="submit" onclick="submit()">提交文件</button>
+    </body>
+</html>
