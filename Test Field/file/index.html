@@ -35,7 +35,17 @@
         </script>
         <script>
             // fetch
-            fetch("http://localhost:3000/")
+            const headers = new Headers();
+            headers.append("Content-Type", "application/json");
+            fetch("http://localhost:3000/file/download", {
+                method: "post",
+                mode: "cors",
+                body: JSON.stringify({
+                    id:
+                        "upload_0f63b135bc79ddcbf07591438949fc34_melon_chiken.png",
+                }),
+                headers,
+            })
                 .then((res) => res.json())
                 .then((res) => {
                     console.log(res);

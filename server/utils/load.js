@@ -1,5 +1,8 @@
 const path = require("path");
 const fs = require("fs");
+
+const separator = process.platform == "win32" ? "\\" : "/";
+
 const load = (baseDir) => async (dir, cb) => {
     // 获取dir的路径
     const url = path.resolve(baseDir, dir);
@@ -10,7 +13,6 @@ const load = (baseDir) => async (dir, cb) => {
 
 const loadFiles = (files, baseDir, cb) => {
     if (files) {
-        const separator = getPathSeparator();
         files.forEach((file) => {
             const path = `${baseDir}${separator}${file}`;
             const stat = fs.statSync(path);
@@ -26,10 +28,9 @@ const loadFiles = (files, baseDir, cb) => {
     }
 };
 
-const getPathSeparator = () => (process.platform == "win32" ? "\\" : "/");
 
 module.exports = {
     load,
     loadFiles,
-    getPathSeparator,
+    separator,
 };

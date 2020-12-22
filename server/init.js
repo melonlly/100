@@ -1,6 +1,6 @@
 const Router = require("koa-router");
-const logger = require("./middleware/LoggerMiddleware")
-let { load, getPathSeparator } = require("./utils/load");
+const routeMiddleware = require("./middleware/route-middleware")
+let { load, separator } = require("./utils/load");
 load = load(__dirname);
 
 const initController = () => {
@@ -14,7 +14,6 @@ const initController = () => {
 const initRouter = () => {
     const router = new Router();
     load("routes", (filename, routes) => {
-        const separator = getPathSeparator();
         let relativePath = filename.split(`routes${separator}`)[1];
         if (relativePath.indexOf(separator) > -1) {
             relativePath = relativePath.split(separator);
@@ -39,7 +38,7 @@ const initRouter = () => {
                 `正在映射地址: ${method.toLocaleUpperCase()} ${prePath}${path}`
             );
             // 注册路由
-            router[method](prePath + path, logger(), routes[key]);
+            router[method](prePath + path, routeMiddleware(), routes[key]);
         });
     });
     return router;
