@@ -1,5 +1,6 @@
 const { separator } = require("../utils/load");
-const path = require("path")
+const path = require("path");
+const fs = require("fs");
 
 class FileController {
     // 上传
@@ -27,14 +28,13 @@ class FileController {
 
     // 下载
     download(ctx, next) {
-        const id = ctx.request.body.id || ''
+        const id = ctx.request.body.id || "";
         console.log(id);
-        const filePath = path.resolve('uploads', id)
+        const filePath = path.resolve("uploads", id);
         console.log(filePath);
 
-        ctx.body = {
-            filePath
-        }
+        ctx.type = `.${id.split(".")[1]}`;
+        ctx.body = fs.readFileSync(filePath);
     }
 }
 

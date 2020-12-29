@@ -163,7 +163,7 @@ Client.prototype.write = function (options, callback) {
             try {
                 const ws = sftp.createWriteStream(destination);
                 if (content && content.length) {
-                    const step = 5000; // 分片大小
+                    const step = 50000; // 分片大小
                     let start = 0; // 起始位置
                     let end = 0; // 结束位置
                     let len = content.length

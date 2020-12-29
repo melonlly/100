@@ -46,9 +46,20 @@
                 }),
                 headers,
             })
-                .then((res) => res.json())
-                .then((res) => {
-                    console.log(res);
+                .then((res) => res.blob())
+                .then((blob) => {
+                    console.log(blob);
+                    var alink = document.createElement("a");
+                    alink.style.display = "none";
+                    alink.href = window.URL.createObjectURL(blob);
+                    console.log(alink.href);
+                    // alink.download = res.headers.get("Content-Disposition"); // 设置文件名
+                    alink.download =
+                        "upload_0f63b135bc79ddcbf07591438949fc34_melon_chiken.png";
+                    document.body.appendChild(alink);
+                    alink.click();
+                    URL.revokeObjectURL(alink.href); // 释放URL 对象
+                    document.body.removeChild(alink);
                 });
         </script>
 
