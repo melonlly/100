@@ -1,0 +1,48 @@
+<html>
+    <script>
+        /*
+            Day 213
+                封装一个localStorage，保证数据的时效性
+        */
+        const localStorage = window.localStorage;
+        localStorage.setItem("name", "melon");
+        console.log(localStorage.getItem("name"));
+        // localStorage.removeItem("name")
+        // localStorage.clear()
+    </script>
+    <script>
+        /*
+            localStorage 与 sessionStorage
+                sessionStorage关闭页面后清空，localStorage会一直保存
+            localStorage的好处：
+                存储空间大，长期保存，同一浏览器，所有标签页全部共享
+            localStorage的坏处：
+                需要手动清除
+        */
+        const set = (key, value) => {
+            const curTime = new Date().getTime();
+            localStorage.setItem(
+                key,
+                JSON.stringify({ data: value, time: curTime })
+            );
+        };
+        // exp: 过期时间（毫秒）
+        const get = (key, exp) => {
+            const localData = localStorage.getItem(key);
+            if (!localData) return "";
+            const localDataObj = JSON.parse(localData);
+            const nowTime = new Date().getTime();
+            const localDataTime = localDataObj.time || nowTime;
+            if (nowTime - localDataObj.time > exp) {
+                console.log("数据已过期");
+                // 删除
+                localStorage.removeItem(key);
+                return false;
+            } else {
+                if (!localDataObj.data) return "";
+                const data = JSON.parse(localDataObj.data);
+                return data;
+            }
+        };
+    </script>
+</html>

@@ -1,6 +1,6 @@
 {
   "name": "melon-sys",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "description": "系统相关（windows）",
   "main": "index.js",
   "scripts": {

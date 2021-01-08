@@ -1,0 +1,39 @@
+<html>
+    <script>
+        /*
+            Day212
+                AST（Abstract Syntax Tree）抽象语法树
+            
+            含义：
+                源代码的抽象语法结构的树状表现形式
+                webpack、eslint等工具库的核心都是通过AST实现对代码的检查、分析等操作 
+            
+            结构：
+                AST是一个对象
+                包含有
+                    一个顶级 type 属性 Program
+                    一个 body 属性，是一个数组
+                        [{
+                            type: 描述该语句的类型，
+                            kind：变量声明的关键字，
+                            declarations：声明内容的数组
+                                [{
+                                    type：类型，
+                                    id
+                                }]
+                        }]
+                
+                词法分析 -> 语法分析 -> 语法树
+
+            用途：
+                语法检查、代码检查、格式化、语法高亮、错误提示、自动补全等
+                代码混淆压缩
+                优化变化代码、改变代码结构等
+            
+            相关工具：
+                esprima：代码转AST
+                estraverse：转换AST树
+                escodegen：AST转code
+        */
+    </script>
+</html>

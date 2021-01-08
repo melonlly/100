@@ -1,0 +1,17 @@
+<html>
+    <script>
+        /*
+            Day215
+                Object.defineProperty()
+                通过 defineProperty 方法添加的属性
+                    默认是
+                        不可枚举的（enumerable=false）
+                        不可改变的（writable=false、configurable=false）
+        */
+        const person = { name: "yd" };
+        Object.defineProperty(person, "age", { value: 21 });
+        person.age = 18; // 对通过 defineProperty 设置的属性无效
+        console.log(person); // { name: "yd", age: 21 }
+        console.log(Object.keys(person)); // ["name"]
+    </script>
+</html>
