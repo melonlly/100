@@ -1,0 +1,41 @@
+<html>
+    <script>
+        /*
+            Day211
+                有没有写过 Koa 中间件，介绍一下写过的中间件？
+                解释一下中间件原理？
+
+            我写过的 koa 中间件
+                token验证中间件
+                    // middleware/token.js
+                    module.exports = options => async (ctx,next){
+                        try{
+                            const token = ctx.header.authorization;
+                            if(token){
+                                // verify 函数验证token,并获取相关信息
+                                await verify(token)
+                            }
+                            await next();
+                        }catch (err){
+                            console.log(err);
+                        }
+                    }
+                日志中间件
+                    // middleware/logger.js
+                    const fs = require('fs');
+                    module.exports = (options) => async (ctx,next){
+                        const startTime = Date.now();
+                        const requestTime = new Date();
+                        await next();
+                        const ms = Date.now - startTime;
+                        let logout = `${ctx.request.ip}--${requestTime}--${ctx.method}--${ctx.url}--${ms}ms`;
+                        // 输出日志文件，可结合 log4js 记录日志
+                        fs.appendFileSync('./log.txt',logout + '\n');
+                    }
+            
+            中间件原理？
+                执行过程：Koa中间件采用的是洋葱圈模型
+                    - 类似函数调用模型，从最外层函数开始进入，从最里层开始完成调用，逐层返回，直到最外层
+        */
+    </script>
+</html>

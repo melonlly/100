@@ -9,6 +9,8 @@ program.command("dadi").description("大地 scp").action(require("../lib"));
 
 program.command("rongzhi").description("rongzhi 3.0.3 scp").action(require("../lib"));
 
+program.command("standard").description("rongzhi standard version scp").action(require("../lib"));
+
 program.parse(process.argv);
 
 // module.exports = require('../lib')

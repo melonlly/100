@@ -28,7 +28,6 @@ module.exports = () => {
             username = "root";
             password = "Cbswk@223";
             sourceDir = `D:/workspace/voiceprint/Ele_Fraud/dist/`;
-            // targetDir = `/mnt/renbao/Test/dist_test/`;
             targetDir = `/mnt/renbao/Test/dist/`;
             break;
         case "rongzhi":
@@ -37,6 +36,13 @@ module.exports = () => {
             password = "Iflytek@saa11";
             sourceDir = `D:/workspace/rongzhi/hengfeng/web/dist/`;
             targetDir = `/home/iflytek/iikb/apache-tomcat-manage/webapps/iikb_manage_web_war/views/`;
+            break;
+        case "standard":
+            host = "172.31.3.229";
+            username = "root";
+            password = "iflytek@saa229";
+            sourceDir = `D:/workspace/rongzhi/standard/web/dist/`;
+            targetDir = `/iflytek/jinshuo/apache-tomcat-manage/webapps/iikb_manage_web_war/views/`;
             break;
     }
 

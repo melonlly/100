@@ -1,0 +1,43 @@
+<html>
+    <script>
+        /*
+            Day216
+                escape、encodeURI、encodeURIComponent有什么区别？
+            
+                escape() - 生成新的由十六进制转义序列替换的字符串 - 已废弃
+                    - 使用 encodeURI 或 encodeURIComponent 代替
+                    - 该方法是针对于 字符串 使用的，不适用于URL
+
+                encodeURI() - 对统一资源标识符 (URI) 进行编码 - 针对于 特定字符 
+                     类型	            包含
+                    保留字符	    ; , / ? : @ & = + $
+                    非转义的字符	字母 数字 - _ . ! ~ * ' ( )
+                    数字符号	    #
+
+                encodeURIComponent() - UTF-8编码的转义序列替换某些字符的每个实例来编码 URI 
+                    不转义的字符：
+                        A-Z a-z 0-9 - _ . ! ~ * ' ( )
+                
+                具体使用场景？
+                    1.编码字符串用 escape，编码URI用 encodeURI和encodeURIComponent
+                    2.编码整个URI用 encodeURI（如果使用encodeURIComponent会把斜杠也编码了）
+                    3.编码 params 时用 encodeURIComponent
+        */
+        /*
+            URL 和 URI有什么区别？
+                URI，统一资源标志符，是一个指向资源的字符串。
+                    - 最通常用在 URL 上来指定Web上资源文件的具体位置
+                    - URI只是一种概念，怎样实现无所谓，只要它唯一标识一个资源就可以了
+                URL，统一资源定位器，是指定在Internet上可以找到资源的位置的文本字符串
+            
+            只要能唯一标识资源的就是 URI，在URI的基础上给出其资源的访问方式的就是 URL。
+        */
+    </script>
+    <script>
+        console.log(encodeURI('http://username:password@www.example.com:80/path/to/file.php?foo=316&bar=this+has+spaces#anchor'));
+        // http://username:password@www.example.com:80/path/to/file.php?foo=316&bar=this+has+spaces#anchor
+
+        console.log(encodeURIComponent('http://username:password@www.example.com:80/path/to/file.php?foo=316&bar=this+has+spaces#anchor'));
+        // http%3A%2F%2Fusername%3Apassword%40www.example.com%3A80%2Fpath%2Fto%2Ffile.php%3Ffoo%3D316%26bar%3Dthis%2Bhas%2Bspaces%23anchor
+    </script>
+</html>

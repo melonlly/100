@@ -1,0 +1,21 @@
+<html>
+    <script>
+        /*
+            Day217
+                1.形参默认值写法 (x = { ...value }, y = number)
+                2.对象浅拷贝 { ...value }
+                3.ECMAScript中所有函数的参数都是按值传递的
+        */
+        const value = { number: 10 };
+        let number = 2;
+        const multiply = (x = { ...value }, y = number) => {
+            y++;
+            console.log((x.number *= y));
+        };
+
+        multiply(); // x.number = 10 * 3 ==> 30
+        multiply(); // 30
+        multiply(value, number); // 30
+        multiply(value, number); // 90
+    </script>
+</html>
