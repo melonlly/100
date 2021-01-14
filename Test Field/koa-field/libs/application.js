@@ -8,7 +8,9 @@ class MKoa extends EventEmitter {
         this.middlewares = [] // 中间件列表
     }
     use(middleware) {
+        if (typeof fn !== 'function') throw new TypeError('middleware must be a function!');
         this.middlewares.push(middleware)
+        return this
     }
     listen(...args) {
         const server = http.createServer(this.callback());
