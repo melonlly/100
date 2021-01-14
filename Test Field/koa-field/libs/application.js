@@ -20,6 +20,8 @@ class MKoa extends EventEmitter {
     // 服务创建完成回调
     callback() {
         const fn = compose(this.middlewares)
+        // 封装 req res error 等
+        return () => fn()
     }
 }
 
