@@ -1,0 +1,21 @@
+<html>
+    <script>
+        /*
+            Day219
+                prototype & __proto__
+
+            前提：
+                万物皆对象（方法也是对象）
+                所有对象都有一个隐式原型 __proto__，指向 constructor.prototype （实例与原型的联系）
+                所有方法都有一个显示原型 prototype，指向其 原型对象，原型对象的 constructor 指回原构造函数
+                    fn.prototype.constructor === fn
+        */
+    </script>
+    <script>
+        function Test() {} // Test是Function的实例
+        const test = new Test();
+        console.log(test.__proto__ === Test.prototype); // true
+        console.log(Test.prototype.__proto__ === Object.prototype); // true
+        console.log(Object.prototype.__proto__); // null
+    </script>
+</html>
