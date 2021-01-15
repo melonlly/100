@@ -7,11 +7,11 @@ app.use(async (ctx, next) => {
     console.log(`出口0~~~`)
 })
 
-app.use(async (ctx, next) => {
-    console.log(`入口1~~~`);
-    // await next()
-    console.log(`出口1~~~`)
-})
+// app.use(async (ctx, next) => {
+//     console.log(`入口1~~~`);
+//     // await next()
+//     console.log(`出口1~~~`)
+// })
 
 app.use(async (ctx, next) => {
     console.log(`入口2~~~`);
