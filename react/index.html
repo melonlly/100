@@ -29,6 +29,27 @@
             非dom属性
                 dangerousSetInnerHTML === innerHTML
                     xss攻击
+                ref
+                    id
+                    不能再函数组件上使用
+                    函数内部使用
+                key
+                    提高渲染性能，唯一标识
+            
+            props / state
+                props 接收外部传入的参数  只读
+                定义方式
+                    函数组件 props  无状态组件
+                    类组件 state 生命周期  有状态组件
+            
+            事件监听this绑定
+                react中，class创建的组件，需要手动绑定this
+                this的四种绑定方式
+                    1.constructor bind绑定          √
+                    2.直接在jsx元素进行绑定          ×
+                        会造成额外的渲染，影响性能
+                    3.使用箭头函数                   √
+                    4.直接在jsx元素上使用箭头函数     ×
         */
     </script>
 </html>
