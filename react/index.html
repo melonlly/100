@@ -41,6 +41,10 @@
                 定义方式
                     函数组件 props  无状态组件
                     类组件 state 生命周期  有状态组件
+                        setState异步更新（批量处理，延迟patch）
+                            react控制的事件处理程序、生命周期钩子函数，更新state是异步的
+                        setState同步更新
+                            原生js绑定事件、setTimeout等（非react控制）
             
             事件监听this绑定
                 react中，class创建的组件，需要手动绑定this
@@ -50,6 +54,86 @@
                         会造成额外的渲染，影响性能
                     3.使用箭头函数                   √
                     4.直接在jsx元素上使用箭头函数     ×
+            
+            组件的state如何划分
+                state props 都会影响ui展示
+                原则
+                    1.让组件尽可能少状态
+                        UI渲染、数据展示、没有复杂交互的组件，使用props，不使用state
+                        函数组件、hook
+                    2.组件有交互，使用state
+                        class组件
+        */
+    </script>
+    <script>
+        /*
+            React 生命周期 （仅存在于class组件）
+
+            挂载阶段
+                constructor(props)
+                    初始化 state this绑定
+                componentWillMount
+                    组件即将被挂载 只会调用一次
+                    setState不会引起重新渲染，不会触发额外的render
+                    >16.3 过时
+                    注意：
+                        在SSR情况时，会被调用两次，服务端一次，客户端一次
+                render
+                    返回一个react元素(state, props)
+                    不负责组件的实际渲染工作，只是返回一个UI描述
+                    注意：
+                        必须是一个纯函数，不能改变state，不能执行任何有副作用的操作
+                    作用
+                        计算 props/state 返回对应的结果
+                        React.createElement 将 jsx 转化为 vDOM对象模型
+                componentDidMount
+                    组件挂载到dom后触发，只会调用一次，获取到真实dom
+                    向服务端请求数据
+                        1.可以保证获取到数据时，可以直接操作dom，初始化第三方库（依赖真实dom节点）
+                        2.保证在任何情况下只会调用一次
+                        3.只能在浏览器端调用
+                    setState会引起组件重新渲染
+
+            更新阶段
+                componentWillReceiveProps(nextProps)
+                    props引起的组件更新过程中
+                    只要父组件的render函数被调用，无论父组件传给子组件的props有没有改变，都会触发
+                shouldComponentUpdate(nextProps, nextState)
+                    通知react组件是否更新，有权利阻止更新
+                    尽量遵循默认行为，状态改变，组件就会被重新渲染
+                    必须有返回结果
+                    减少组件不必要的渲染
+                    不能调用setState
+                componentWillUpdate(nextProps, nextState)
+                    更新发生前，较少用
+                    不能调用setState
+                componentDidUpdate(prevProps, prevState)
+                    更新完成调用，更新真实dom
+
+            卸载阶段
+                componentWillUnmount
+                    将被卸载
+                    移除定时器、取消一些网络请求、监听解绑
+
+            错误处理阶段
+                componentDidCatch(error, info)
+
+        */
+    </script>
+    <script>
+        /*
+            表单组件
+                受控组件
+                    依赖状态，默认值实时映射到状态
+                    必须使用 onChange
+                    双向绑定
+                    优点
+                        符合react数据流
+                        修改使用更方便，完全不需要获取dom
+                非受控组件
+                    不受控制，需要获取dom、操作dom（ref）
+                    优点
+                        容易与第三方组件结合
         */
     </script>
 </html>
