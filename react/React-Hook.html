@@ -1,0 +1,69 @@
+<html>
+    <script>
+        /*
+            React Hook
+                16.8 新增特性
+                    在函数组件中使用state
+                可选、100%向下兼容
+            
+            why？
+                代码更简洁
+                上手更简单
+                    react相对不易上手？
+                        1.生命周期应用
+                        2.Redux，状态管理，概念多，难以理解
+                        3.高阶组件
+                        4.react文档、社区（英文）
+                    学习成本降低（使用Hook）
+                        1.生命周期可以不用学
+                        2.高阶组件不用学
+                        3.redux不是必须，可选mobx
+                开发体验好
+                    让函数组件维护内部的状态
+            
+            单向数据流
+                自上而下
+                修改 state/props 会引发组件重新渲染
+                    class -> render
+                    function -> 整个函数重新执行
+                hook -> 有状态的函数式组件
+
+            use？
+                useState
+                    每次渲染，函数都会重新执行。
+                        原来：函数执行完毕，所有内存都会被释放掉。（所以为什么不能使用state）
+                        现在：通过闭包实现useState，保存状态
+                    useState(0) => [count, setCount]
+                        count：state字段名称
+                        setCount：修改count的方法
+                useEffect（副作用：没有发生在props向视图转化过程中的逻辑）
+                    原来：函数组件，纯函数，通过固定输入（props），得到固定输出（组件渲染）
+                    现在：组件渲染完成时执行 useEffect （类似生命周期钩子componentDidMound、componentDidUpdate），返回一个回调（用于清除副作用或者null）
+                    一般情况不需要同步执行，若需要同步，则使用 useLayoutEffect
+                useContext
+                    16更新了context api
+                        context -> 组件传值
+                    提供使用 context 的能力，结合 useContext 可以解决组件之间状态共享问题（部分情况可以替代Redux）
+                        只要被 context.Provider 包裹的组件，都能通过 useContext(context) 获取保存的数据
+                useReducer
+                    useState内部是靠useReducer实现的
+                    适合复杂场景
+                useRef
+                    16 Object.createRef 创建ref方法
+                useMemo
+                    把 创建函数 和 依赖项数组 作为参数传入useMemo
+                useCallback
+                    接收一个 内联回调函数 和 依赖项数组
+                自定义Hook（mixin）
+                    逻辑相同的片段 -> 封装成单独的函数
+                    约定
+                        use开头
+                        只能在函数组件中使用
+                        复用逻辑，而不是复用state
+                        每次Hook调用都有一个独立的state
+
+            rules？
+                1.只能在函数最顶层使用Hook
+        */
+    </script>
+</html>
