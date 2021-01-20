@@ -1,0 +1,74 @@
+<html>
+    <script>
+        /*
+            函数式编程的compose
+                作用是将多个函数串联起来执行，一个函数的输出是另一个函数的输入，直到执行完成
+        */
+
+        // 案例1
+        // const greeting = (name) => `hello ${name}`;
+        // const toUpper = (str) => str.toUpperCase();
+        // const fn = compose(toUpper, greeting);
+        // console.log(fn("yideng"));
+        /*
+            希望输出 HELLO YIDENG
+                1.compose的入参都是函数，且自右向左执行
+                2.前一个函数的执行结果，是下一个函数的输入
+                3.返回一个新的函数
+        */
+
+        // 递归实现
+        const recursionCompose = function (...funcs) {
+            let len = funcs.length,
+                count = len - 1,
+                result = null;
+            // 首先compse 返回的是一个函数
+            return function fn(...args) {
+                // 函数体里就是不断执行args函数，将上一个函数的执行结果作为下一个执行函数的输入参数，
+                // 需要一个count来记录args函数列表的执行情况
+                result = funcs[count].apply(this, args);
+                // 递归退出条件
+                if (count <= 0) {
+                    count = len - 1; // 为了下次调用生效，调用完成需要重置count
+                    return result;
+                } else {
+                    count--; // 每次调用
+                    return fn.call(null, result); // 递归调用所有函数
+                }
+            };
+        };
+        // 测试
+        const greeting = (name) => `hello ${name}`;
+        const toUpper = (str) => str.toUpperCase();
+        const fn = recursionCompose(toUpper, greeting);
+        console.log(fn("yideng"));
+        console.log(fn("yideng123"));
+
+        // 迭代实现
+        function interationCompose(...fns) {
+            let isFirst = true;
+            return (...args) => {
+                /*
+                    array.reduceRight(
+                            function(total, currentValue, currentIndex, arr),
+                            initialValue
+                        )
+                    参数一
+                        必传 total -> 最终返回的结果
+                        必传 currentValue -> 当前值（本例中指具体需要合并的函数）
+                        可选 currentIndex -> 当前索引
+                        可选 arr -> 原数组
+                    参数二
+                        可选 initialValue -> 传递给函数的初始值
+                */
+                return fns.reduceRight((result, fn) => {
+                    if (!isFirst) return fn(result);
+                    isFirst = false;
+                    return fn(...result);
+                }, args);
+            };
+        }
+        const fn1 = interationCompose(toUpper, greeting);
+        console.log(fn1("yideng777"));
+    </script>
+</html>
