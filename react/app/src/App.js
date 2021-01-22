@@ -1,6 +1,7 @@
 import logo from "./logo.svg";
 import "./App.css";
 import ComponentHook from "./ComponentHook";
+import ReduxComponent from "./ReduxComponent"
 
 function App() {
     return (
@@ -12,6 +13,7 @@ function App() {
                 </p>
             </header>
             <ComponentHook />
+            <ReduxComponent />
         </div>
     );
 }
