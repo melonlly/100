@@ -5,4 +5,101 @@
                 多种方式实现圆形可点击区域（三种）
         */
     </script>
+
+    <!--
+        方式一：border-radius
+    -->
+    <style>
+        #circle {
+            background: red;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+        }
+    </style>
+    <div id="circle"></div>
+    <script>
+        document.querySelector("#circle").onclick = function () {
+            alert("ok");
+        };
+    </script>
+
+    <!--
+        方式二：map + area
+            map标签用来定一个客户端图像映射（带有可点击区域的一幅图像）
+            area标签用来定义图像映射中的区域，area元素永远嵌套在map元素内部
+    -->
+    <img src="add.png" usemap="#Map" />
+    <map name="Map" id="Map">
+        <area
+            shape="circle"
+            coords="100,100,50"
+            href="https://www.yidengxuetang.com/"
+            rel="external nofollow"
+            target="_blank"
+        />
+    </map>
+
+    <!--
+        方式三：js实现
+            获取坐标点击位置坐标，判断其到圆心的距离是否大于半径
+    -->
+    <script>
+        document.onclick = function (e) {
+            let [x, y, r] = [100, 100, 100], // x,y 坐标原点，r半径
+                x1 = e.clientX, // 获取x坐标
+                y1 = e.clientY, // 获取y坐标
+                dis = Math.abs(
+                    Math.sqrt(Math.pow(x - x1, 2) + Math.pow(y - y1, 2))
+                );
+            if (dis < r) {
+                alert("ok");
+            }
+        };
+    </script>
+
+    <!--
+        方式四：canvas
+    -->
+    <canvas id="drawing" width="400" height="400"></canvas>
+    <script>
+        window.onload = () => {
+            let drawing = document.querySelector("#drawing"),
+                ctx = drawing.getContext("2d");
+            circle = new Shape(100, 100, 50);
+            circle.click = () => {
+                alert("ok");
+            };
+            drawing.onmousedown = function (event) {
+                let { clientX, clientY } = event || window.event,
+                    point = {
+                        x: clientX - drawing.offsetLeft,
+                        y: clientY - drawing.offsetTop,
+                    };
+                circle.reDraw(point);
+            };
+
+            function Shape(x, y, r) {
+                this.x = x;
+                this.y = y;
+                this.r = r;
+                ctx.fillStyle = "red";
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.r, 2 * Math.PI, false);
+                ctx.closePath();
+                ctx.fill();
+            }
+            Shape.prototype.reDraw = function (point) {
+                ctx.fillStyle = "red";
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.r, 2 * Math.PI, false);
+                ctx.closePath();
+                ctx.fill();
+                //   判断点击是否在圆形区域内
+                if (ctx.isPointInPath(point.x, point.y)) {
+                    this.click();
+                }
+            };
+        };
+    </script>
 </html>

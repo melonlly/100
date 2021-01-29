@@ -4,5 +4,25 @@
             Day225
                 介绍 instanceof 原理并实现
         */
+        function myInstanceof(left, right) {
+            if (typeof right !== "function") throw new Error("instance error");
+            if (
+                !left ||
+                (typeof left !== "object" && typeof left !== "function")
+            )
+                return false;
+            // 获取到原型对象
+            const rightVal = right.prototype;
+            const leftVal = left.__proto__;
+            // 若找不到就一直循环到父类型或祖类型
+            while (leftVal) {
+                if (leftVal === rightVal) {
+                    return true;
+                }
+                leftVal = leftVal.__proto__; // 获取祖类型的__proto__
+            }
+            return false;
+        }
+        console.log(myInstanceof(() => {}, Function)); // true
     </script>
 </html>

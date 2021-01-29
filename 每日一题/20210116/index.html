@@ -3,6 +3,22 @@
         /*
             Day221  工程化、Manifest
                 Webpack Runtime 和 Manifest 代码的作用
+
+            Runtime
+                Runtime 主要是指在浏览器运行时，webpack 用来连接模块化应用程序的所有代码。
+                Runtime包含：
+                    在模块交互时，连接模块所需的 load & parse 逻辑
+                    与浏览器中已加载模块的连接
+                    懒加载模块的执行逻辑
+            
+            Manifest
+                代码经过编译打包之后，会生成 index.html、一些bundle、各类资源文件，
+                webpack 需要通过 Manifest 来管理所有模块直接的交互
+                当 compiler 开始执行、解析、映射应用程序时，会保留所有模块的详细要点。
+                    这个数据集合称之为 Manifest
+            
+            Runtime 根据 Manifest 数据来管理模块代码。
+
         */
     </script>
 </html>
