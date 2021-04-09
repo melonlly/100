@@ -1,4 +1,9 @@
 <html>
+    <style>
+        body {
+            margin: 0;
+        }
+    </style>
     <script>
         /*
             Day224
@@ -17,19 +22,19 @@
             border-radius: 50%;
         }
     </style>
-    <div id="circle"></div>
+    <!-- <div id="circle"></div>
     <script>
         document.querySelector("#circle").onclick = function () {
             alert("ok");
         };
-    </script>
+    </script> -->
 
     <!--
         方式二：map + area
             map标签用来定一个客户端图像映射（带有可点击区域的一幅图像）
             area标签用来定义图像映射中的区域，area元素永远嵌套在map元素内部
     -->
-    <img src="add.png" usemap="#Map" />
+    <!-- <img src="add.png" usemap="#Map" />
     <map name="Map" id="Map">
         <area
             shape="circle"
@@ -38,13 +43,13 @@
             rel="external nofollow"
             target="_blank"
         />
-    </map>
+    </map> -->
 
     <!--
         方式三：js实现
             获取坐标点击位置坐标，判断其到圆心的距离是否大于半径
     -->
-    <script>
+    <!-- <script>
         document.onclick = function (e) {
             let [x, y, r] = [100, 100, 100], // x,y 坐标原点，r半径
                 x1 = e.clientX, // 获取x坐标
@@ -56,7 +61,7 @@
                 alert("ok");
             }
         };
-    </script>
+    </script> -->
 
     <!--
         方式四：canvas
@@ -70,13 +75,15 @@
             circle.click = () => {
                 alert("ok");
             };
+            // 监听canvas区域鼠标按下事件
             drawing.onmousedown = function (event) {
                 let { clientX, clientY } = event || window.event,
                     point = {
                         x: clientX - drawing.offsetLeft,
                         y: clientY - drawing.offsetTop,
                     };
-                circle.reDraw(point);
+                console.log(clientX, clientY, point);
+                circle.check(point);
             };
 
             function Shape(x, y, r) {
@@ -86,16 +93,19 @@
                 ctx.fillStyle = "red";
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.r, 2 * Math.PI, false);
+                ctx.moveTo(0, 0);
+                ctx.lineTo(this.x, this.y);
+                ctx.lineTo(this.x * 2, 0);
+                ctx.stroke();
                 ctx.closePath();
                 ctx.fill();
             }
-            Shape.prototype.reDraw = function (point) {
-                ctx.fillStyle = "red";
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.r, 2 * Math.PI, false);
-                ctx.closePath();
-                ctx.fill();
-                //   判断点击是否在圆形区域内
+            // 判断点击是否在圆形区域内
+            Shape.prototype.check = function (point) {
+                /*
+                    CanvasRenderingContext2D.isPointInPath()是 Canvas 2D API 用于判断在当前路径中是否包含检测点的方法
+                    当前路径是指当前在 canvas 上绘制所有路径（点、线段、图形等）
+                */
                 if (ctx.isPointInPath(point.x, point.y)) {
                     this.click();
                 }

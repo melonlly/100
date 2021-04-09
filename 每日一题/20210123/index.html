@@ -2,6 +2,27 @@
     <script>
         /*
             Day226:用 reduce 实现 map 方法
+
+            reduce 是一个累积方法，对数组每一项累积执行回调函数，返回最终计算结果
+                array.reduce((total, currentValue, currentIndex, arr, initialValue) => {})
+            map 是遍历数组的每一项，并执行回调函数的操作，返回一个对每一项进行操作后的新数组
+                array.map((currentValue, index, arr) => {})
         */
+        Array.prototype.myMap = function (fn, thisArg = []) {
+            if (typeof fn !== Function) {
+                throw new Error(`${fn} is not a function`);
+            }
+            const res = [];
+            this.reduce((pre, cur, index, arr) => {
+                res.push(fn.call(thisArg, cur, index, arr));
+            }, []);
+            return res;
+        };
+        var arr = [2, 3, 1, 5];
+        arr.myMap(function (item, index, arr) {
+            console.log(item, index, arr);
+        });
+        let res = arr.myMap((v) => v * 2);
+        console.log(res); // [4,6,2,10]
     </script>
 </html>

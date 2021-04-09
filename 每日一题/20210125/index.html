@@ -4,6 +4,36 @@
             Day228
                 Token一般存放在哪里？
                 Token放在cookie、localStorage、sessionStorage中分别有什么不同？
+            
+            token是访问资源的凭证
+                用户登录成功之后，服务器将登录凭证做数字签名，加密后得到的字符串作为token
+            
+            客户端存储
+                1.存储在 localStorage/sessionStorage 中，每次调用接口时，多传一个字段
+                2.存储在 cookie 中，自动发送（缺点是不能跨域）
+                3.存储在 localStorage/sessionStorage 中，每次调用接口时，请求头多传一个字段
+            
+            token存放在 cookie、localStorage、sessionStorage 中有什么区别？
+                1.存储于 localStorage、sessionStorage
+                    容易受到 XSS 攻击（Cross-Site Scripting 跨站脚本攻击，代码注入攻击）
+                    不建议将有价值的信息存储在Web存储中
+                2.存储于 cookie
+                    优点：可以指定httponly，防止被js读取；也可以指定secure，来保证token只在https下传输
+                    缺点：容易受到 CSRF 攻击
+                        CSRF：Cross-Site Request Forgery 跨站请求伪造，攻击者通过一些技术手段，
+                                欺骗用户的浏览器去访问一个认证过的网站，并进行一些操作。
+            
+            JWT
+                JSON Web Token
+                是一个开放标准(RFC 7519)，它定义了一种紧凑的、自包含的方式，用于作为JSON对象在各方之间安全地传输信息。
+                该信息可以被验证和信任，因为它是数字签名的。
+                使用场景：
+                    1.Authorization (授权)
+                    2.Information Exchange (信息交换)
+                构成：
+                    Header.Payload.Signature
+                工作流程：
+                    ~
         */
     </script>
 </html>

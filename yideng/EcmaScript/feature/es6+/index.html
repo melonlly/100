@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>ES6+</title>
+        <script src="./main.js"></script>
+    </head>
+    <body>
+        <script>
+            const arr = [1, 2, 3];
+            console.log(arr.includes(2), arr.includes(4)); // true false
+        </script>
+
+        <script>
+            console.log(Math.pow(2, 3), 2 ** 3); // 8 8
+        </script>
+
+        <!-- es8 -->
+        <script>
+            // older -> 1.嵌套回调 2.Promise 3.Generators
+
+            async function fn() {
+                console.log(111);
+                await console.log(222);
+                console.log(333);
+            }
+            fn();
+            console.log(444);
+            /*
+                111
+                222
+                444
+                333
+            */
+
+            async function add(n) {
+                return n + 2;
+            }
+            console.log(add(1)); // Peomise
+            add(2).then((sum) => console.log(sum)); // 4
+        </script>
+
+        <script>
+            const obj1 = {
+                name: "melon",
+                age: 27,
+            };
+            // 不包括继承来的属性
+            console.log(Object.values(obj1)); // ['melon' 27]
+
+            console.log(Object.entries(obj1)); // [['name', 'melon'], ['age', 27]]
+            // 'melon' -> ['m', 'e', 'l', 'o', 'n']
+            console.log(Object.entries("melon")); // [['0', 'm'], ['1', 'e'], ['2', 'l'], ['3', 'o'], ['4', 'n']]
+        </script>
+
+        <script>
+            // 从右向左
+            console.log("melon".padStart(5)); // 'melon'
+            console.log("melon".padStart(6)); // ' melon'
+            console.log("melon".padStart(7, "x")); // 'xxmelon'
+            console.log("melon".padStart(3)); // 'melon'
+            console.log("melon".padStart(3, "y")); // 'melon'
+            console.log("melon".padStart(7, "abcde")); // 'abmelon'
+            // 从左向右
+            console.log("melon".padEnd(6)); // 'melon '
+            console.log("melon".padEnd(7, "abcde")); // 'melonab'
+        </script>
+
+        <script>
+            // SharedArrayBuffer  Atomics
+            /*
+                js主线程 <-> web-worker线程
+                    postMessage() 线程间数据传递
+                
+                SharedArrayBuffer 内存中共享
+                多线程 -> 竞争
+                Atomics 原子操作，加锁
+            */
+            // const sab = new SharedArrayBuffer(1000); // 缓冲区大小，byte
+        </script>
+    </body>
+</html>

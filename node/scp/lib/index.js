@@ -16,33 +16,12 @@ module.exports = () => {
     let sourceDir = ``;
     let targetDir = ``;
     switch (type) {
-        case "dadi":
-            host = "172.31.223.138";
+        case "xxx":
+            host = "000.000.000.000";
             username = "root";
-            password = "Cbswk@223";
-            sourceDir = `D:/workspace/voiceprint/voiceprint-web/dist/`;
-            targetDir = `/mnt/dadi/dists/`;
-            break;
-        case "renbao":
-            host = "172.31.223.138";
-            username = "root";
-            password = "Cbswk@223";
-            sourceDir = `D:/workspace/voiceprint/Ele_Fraud/dist/`;
-            targetDir = `/mnt/renbao/Test/dist/`;
-            break;
-        case "rongzhi":
-            host = "172.31.243.54";
-            username = "root";
-            password = "Iflytek@saa11";
-            sourceDir = `D:/workspace/rongzhi/hengfeng/web/dist/`;
-            targetDir = `/home/iflytek/iikb/apache-tomcat-manage/webapps/iikb_manage_web_war/views/`;
-            break;
-        case "standard":
-            host = "172.31.3.229";
-            username = "root";
-            password = "iflytek@saa229";
-            sourceDir = `D:/workspace/rongzhi/standard/web/dist/`;
-            targetDir = `/iflytek/jinshuo/apache-tomcat-manage/webapps/iikb_manage_web_war/views/`;
+            password = "xxxxxx";
+            sourceDir = `path`;
+            targetDir = `path`;
             break;
     }
 

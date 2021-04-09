@@ -4,6 +4,15 @@
             Day227
                 Webpack如果使用了hash命名，是否每次都会重新生成hash？
                 Webpack有哪些hash策略？
+            
+            Webpack hash 分类
+                1.hash
+                    每个文件都具有相同的基于源文件生成的hash值
+                    不更改内容，重新构建，生成的hash不变
+                2.chunkhash
+                    根据不同入口，生成对应的hash
+                3.contenthash
+                    每个生成的文件根据该文件的内容生成的hash
         */
     </script>
 </html>
