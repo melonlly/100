@@ -1,14 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>手写 Promise</title>
-</head>
-<body>
-    <script>
-        // 
-    </script>
-</body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>手写 Promise</title>
+    </head>
+    <body>
+        <script>
+            // Promise 状态
+            const STATE = {
+                PENDING: "PENDING", // 执行态
+                FULFILLED: "FULFILLED", // 完成态
+                REJECTED: "REJECTED", // 拒绝态
+            };
+
+            class MyPromise {
+                constructor(fn) {
+                    this.state = STATE.PENDING; // 当前状态
+                    this.value = undefined; // 当前值
+                    this.resolvedCallbacks = []; // 执行列表
+                    const resolve = (val) => {
+                        // 模拟微任务
+                        setTimeout(() => {
+                            if (this.state === STATE.PENDING) {
+                                this.state = STATE.FULFILLED;
+                                this.value = val;
+                                this.resolvedCallbacks.map((callback) =>
+                                    callback(val)
+                                ); // 依次执行
+                            }
+                        });
+                    };
+                    const reject = (reason) => {
+                        this.state = STATE.REJECTED;
+                        this.value = reason;
+                    };
+                    fn(resolve, reject);
+                }
+                then(onFulfilled) {
+                    if (this.state === STATE.PENDING) {
+                        this.resolvedCallbacks.push(onFulfilled);
+                    }
+                }
+            }
+        </script>
+
+        <script>
+            /*
+                异步 resolve()
+            */
+            new MyPromise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve("异步 resolve()");
+                }, 1000);
+            }).then((data) => console.log(`MyPromise data: ${data}`));
+            new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve("异步 resolve()");
+                }, 1000);
+            }).then((data) => console.log(`Promise data: ${data}`));
+        </script>
+
+        <script>
+            /*
+                同步 resolve()
+                    MyPromise的问题：调用同步的resolve()时，then还未添加callback到执行队列
+                    原理：Promise通过微任务执行所有callbacks，即可确保同步的callback（then(callback)，宏任务）添加到执行队列
+                    解决：通过异步方式模拟微任务执行callbacks，如setTimeOut()
+            */
+            new MyPromise((resolve, reject) => {
+                resolve("同步 resolve()");
+            }).then((data) => console.log(`MyPromise data: ${data}`));
+            new Promise((resolve, reject) => {
+                resolve("同步 resolve()");
+            }).then((data) => console.log(`Promise data: ${data}`));
+            /*
+                输出：
+                    Promise data: 同步 resolve()
+                    MyPromise data: 同步 resolve()
+                原因：
+                    由于是通过setTimeOut模拟的微任务执行，实际setTimeOut是属于宏任务，
+                    并且一次 eventloop 周期中，宏任务执行前，会先将微任务队列清空（即执行完），
+                    所以微任务会先于宏任务执行，因此即使 MyPromise的resolve 写在前面，实际上也是 Promise的resolve 先执行。
+            */
+        </script>
+
+        <script>
+            /*
+                多次 resolve()
+                    输出：
+                        Promise data: 多次 resolve() 1
+                        MyPromise data: 多次 resolve() 1
+                        MyPromise data: 多次 resolve() 2
+                        MyPromise data: 多次 resolve() 3
+                    MyPromise的问题：会被执行多次
+                    规范：调用次数不可超过一次
+                    解决：根据当前状态是否是 PENDING 判断是否执行
+            */
+            new MyPromise((resolve, reject) => {
+                resolve("多次 resolve() 1");
+                resolve("多次 resolve() 2");
+                resolve("多次 resolve() 3");
+            }).then((data) => console.log(`MyPromise data: ${data}`));
+            new Promise((resolve, reject) => {
+                resolve("多次 resolve() 1");
+                resolve("多次 resolve() 2");
+                resolve("多次 resolve() 3");
+            }).then((data) => console.log(`Promise data: ${data}`));
+        </script>
+
+        <script>
+            /*
+                then 链式调用
+                    输出：
+                        MyPromise：Uncaught TypeError: Cannot read property 'then' of undefined
+                        Promise data: then 链式调用 0
+                        Promise data: then 链式调用 1
+                        Promise data: then 链式调用 2
+                    原理：
+            */
+            new MyPromise((resolve, reject) => {
+                resolve("then 链式调用 0");
+            })
+                .then((data) => {
+                    console.log(`MyPromise data: ${data}`);
+                    return "then 链式调用 1";
+                })
+                .then((data) => {
+                    console.log(`MyPromise data: ${data}`);
+                    return "then 链式调用 2";
+                })
+                .then((data) => {
+                    console.log(`MyPromise data: ${data}`);
+                    return "then 链式调用 3";
+                });
+            new Promise((resolve, reject) => {
+                resolve("then 链式调用 0");
+            })
+                .then((data) => {
+                    console.log(`Promise data: ${data}`);
+                    return "then 链式调用 1";
+                })
+                .then((data) => {
+                    console.log(`Promise data: ${data}`);
+                    return "then 链式调用 2";
+                })
+                .then((data) => {
+                    console.log(`Promise data: ${data}`);
+                    return "then 链式调用 3";
+                });
+        </script>
+    </body>
 </html>

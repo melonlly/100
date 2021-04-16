@@ -8,7 +8,7 @@
 4. resolve()，返回一个新的 Promise 实例
 5. catch()，返回一个新的 Promise 实例
 6. finally()
-7. 静态方法，如 Promise.all ...
+7. 静态方法，如 Promise.all()、Promise.resolve() ...
 
 ## 实际案例
 
