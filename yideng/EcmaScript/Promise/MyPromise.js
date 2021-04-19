@@ -11,7 +11,7 @@ const STATE = {
 function promiseResolutionProcedure(newPromise, x, resolve, reject) {
     // 判断 promise 对象
     if (newPromise === x) {
-        return new TypeError(`TypeError`);
+        return new TypeError(`Chaining cycle detected for promise #<MyPromise>`); // 避免循环引用
     } else {
         if (x instanceof MyPromise) {
             // 状态判断

@@ -18,5 +18,5 @@
 4. then 方法链式调用（支持空调用）
 5. then 传递 thenable 对象
 6. then 传递 promise 对象
-7. resolve 传递 promise 对象
-8. 循环promise
+7. resolve 传递 promise 对象（初始创建promise实例时）
+8. then 中循环promise

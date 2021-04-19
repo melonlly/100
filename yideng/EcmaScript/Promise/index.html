@@ -232,5 +232,28 @@
                     console.log(`Promise data: ${data}`);
                 });
         </script>
+
+        <script>
+            /*
+                Promise 循环引用问题
+
+                const promise = new Promise((resolve) => {
+                    resolve(`promise cycle reference 0`);
+                });
+                const promise1 = promise.then((data) => {
+                    return promise1; // 循环引用
+                });
+                // TypeError: Chaining cycle detected for promise #<Promise>
+                
+                
+            */
+            const myPromise = new MyPromise((resolve) => {
+                resolve(`promise cycle reference 0`);
+            });
+            const myPromise1 = myPromise.then((data) => {
+                return myPromise1; // 循环引用
+            });
+            // TypeError: Chaining cycle detected for promise #<MyPromise>
+        </script>
     </body>
 </html>
