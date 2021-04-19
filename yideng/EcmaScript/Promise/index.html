@@ -7,44 +7,7 @@
         <title>手写 Promise</title>
     </head>
     <body>
-        <script>
-            // Promise 状态
-            const STATE = {
-                PENDING: "PENDING", // 执行态
-                FULFILLED: "FULFILLED", // 完成态
-                REJECTED: "REJECTED", // 拒绝态
-            };
-
-            class MyPromise {
-                constructor(fn) {
-                    this.state = STATE.PENDING; // 当前状态
-                    this.value = undefined; // 当前值
-                    this.resolvedCallbacks = []; // 执行列表
-                    const resolve = (val) => {
-                        // 模拟微任务
-                        setTimeout(() => {
-                            if (this.state === STATE.PENDING) {
-                                this.state = STATE.FULFILLED;
-                                this.value = val;
-                                this.resolvedCallbacks.map((callback) =>
-                                    callback(val)
-                                ); // 依次执行
-                            }
-                        });
-                    };
-                    const reject = (reason) => {
-                        this.state = STATE.REJECTED;
-                        this.value = reason;
-                    };
-                    fn(resolve, reject);
-                }
-                then(onFulfilled) {
-                    if (this.state === STATE.PENDING) {
-                        this.resolvedCallbacks.push(onFulfilled);
-                    }
-                }
-            }
-        </script>
+        <script src="./MyPromise.js"></script>
 
         <script>
             /*
@@ -118,7 +81,7 @@
                         Promise data: then 链式调用 0
                         Promise data: then 链式调用 1
                         Promise data: then 链式调用 2
-                    原理：
+                    原理：then返回新Promise
             */
             new MyPromise((resolve, reject) => {
                 resolve("then 链式调用 0");
@@ -127,6 +90,7 @@
                     console.log(`MyPromise data: ${data}`);
                     return "then 链式调用 1";
                 })
+                .then() // 空调用
                 .then((data) => {
                     console.log(`MyPromise data: ${data}`);
                     return "then 链式调用 2";
@@ -142,6 +106,7 @@
                     console.log(`Promise data: ${data}`);
                     return "then 链式调用 1";
                 })
+                .then() // 空调用
                 .then((data) => {
                     console.log(`Promise data: ${data}`);
                     return "then 链式调用 2";
@@ -149,6 +114,122 @@
                 .then((data) => {
                     console.log(`Promise data: ${data}`);
                     return "then 链式调用 3";
+                });
+        </script>
+
+        <script>
+            /*
+                promise 解决过程
+                    解决 then 返回 thenable 对象嵌套问题
+                        {
+                            then(resolve) {
+                                resolve({
+                                    then(resolve1) {
+                                        resolve1({
+                                            then(resolve2) {
+                                                resolve2('xxx')
+                                            }
+                                        })
+                                    }
+                                });
+                            },
+                        }
+            */
+            new MyPromise((resolve, reject) => {
+                resolve(`thenable 对象 0`);
+            })
+                .then((data) => {
+                    console.log(`MyPromise data: ${data}`);
+                    // thenable 对象
+                    return {
+                        then(resolve, reject) {
+                            console.log(`MyPromise thenable 对象 depth-1`);
+                            resolve({
+                                then(resolve1, reject1) {
+                                    console.log(
+                                        `MyPromise thenable 对象 depth-2`
+                                    );
+                                    resolve1(`MyPromise thenable 对象 data`);
+                                },
+                            });
+                        },
+                    };
+                })
+                .then((data) => {
+                    console.log(`MyPromise data: ${data}`);
+                });
+            new Promise((resolve, reject) => {
+                resolve(`thenable 对象 0`);
+            })
+                .then((data) => {
+                    console.log(`Promise data: ${data}`);
+                    // thenable 对象
+                    return {
+                        then(resolve, reject) {
+                            console.log(`Promise thenable 对象 depth-1`);
+                            resolve({
+                                then(resolve1, reject1) {
+                                    console.log(
+                                        `Promise thenable 对象 depth-2`
+                                    );
+                                    resolve1(`Promise thenable 对象 data`);
+                                },
+                            });
+                        },
+                    };
+                })
+                .then((data) => {
+                    console.log(`Promise data: ${data}`);
+                });
+        </script>
+
+        <script>
+            /*
+                递归 resolve(promise || thenable)
+            */
+            new MyPromise((resolve, reject) => {
+                resolve(
+                    new MyPromise((resolve1) => {
+                        resolve1(`new MyPromise 0`);
+                    })
+                );
+            })
+                .then((data) => {
+                    console.log(`MyPromise data: ${data}`);
+                    return new MyPromise((resolve, reject) => {
+                        console.log(`MyPromise new MyPromise depth-1`);
+                        resolve(
+                            new MyPromise((resolve1, reject1) => {
+                                console.log(`MyPromise new MyPromise depth-2`);
+                                resolve(`MyPromise new MyPromise data`);
+                            })
+                        );
+                    });
+                })
+                .then((data) => {
+                    console.log(`MyPromise data: ${data}`);
+                });
+            new Promise((resolve, reject) => {
+                resolve(
+                    new MyPromise((resolve1) => {
+                        resolve1(`new Promise 0`);
+                    })
+                );
+            })
+                .then((data) => {
+                    console.log(`Promise data: ${data}`);
+                    return new Promise((resolve, reject) => {
+                        console.log(`Promise new Promise depth-1`);
+                        resolve(
+                            new Promise((resolve1, reject1) => {
+                                console.log(`Promise new Promise depth-2`);
+                                resolve(`Promise new Promise data`);
+                            })
+                        );
+                    });
+                })
+                .then((data) => {
+                    console.log(`Promise data: ${data}`);
                 });
         </script>
     </body>
