@@ -245,15 +245,69 @@
                 });
                 // TypeError: Chaining cycle detected for promise #<Promise>
                 
-                
+                const myPromise = new MyPromise((resolve) => {
+                    resolve(`promise cycle reference 0`);
+                });
+                const myPromise1 = myPromise.then((data) => {
+                    return myPromise1; // 循环引用
+                });
+                // TypeError: Chaining cycle detected for promise #<MyPromise>
             */
-            const myPromise = new MyPromise((resolve) => {
-                resolve(`promise cycle reference 0`);
-            });
-            const myPromise1 = myPromise.then((data) => {
-                return myPromise1; // 循环引用
-            });
-            // TypeError: Chaining cycle detected for promise #<MyPromise>
+        </script>
+
+        <script>
+            /*
+                Promise.all()
+            */
+            MyPromise.all([
+                new MyPromise((resolve) => resolve(`MyPromise.all 0`)),
+                new MyPromise((resolve) => {
+                    setTimeout(
+                        () => resolve(`MyPromise.all setTimeout 1`),
+                        100
+                    );
+                }),
+            ]).then((datalist) => console.log(`MyPromise data: ${datalist}`));
+            Promise.all([
+                new Promise((resolve) => resolve(`Promise.all 0`)),
+                new Promise((resolve) => {
+                    setTimeout(() => resolve(`Promise.all setTimeout 1`), 100);
+                }),
+            ]).then((datalist) => console.log(`Promise data: ${datalist}`));
+        </script>
+
+        <script>
+            /*
+                reject
+                    若没有处理处理 reject 的对应回调，则会抛出异常
+                        Uncaught Error: MyPromise reject reason
+                        Uncaught (in promise) Promise reject reason
+            */
+            new MyPromise((resolve, reject) =>
+                reject(`MyPromise reject reason`)
+            ).then(
+                (data) => console.log(`MyPromise data: ${data}`),
+                (reason) => console.log(`MyPromise reject reason: ${reason}`)
+            );
+            new Promise((resolve, reject) =>
+                reject(`Promise reject reason`)
+            ).then(
+                (data) => console.log(`Promise data: ${data}`),
+                (reason) => console.log(`Promise reject reason: ${reason}`)
+            );
+        </script>
+
+        <script>
+            /*
+                完成态、回绝态处理
+            */
+            const myPromise = new MyPromise((resolve, reject) =>
+                resolve(`MyPromise resolve then`)
+            );
+            myPromise.then((data) => console.log(`MyPromise data 0: ${data}`));
+            // 修改为完成态后，再次执行then
+            myPromise.then((data) => console.log(`MyPromise data 1: ${data}`));
+            // 回绝态同理
         </script>
     </body>
 </html>
