@@ -1,0 +1,36 @@
+vue2
+vue3
+vue性能优化
+vue SSR
+
+js基础
+this
+new
+作用域链
+js异步编程
+闭包
+event loop
+垃圾回收
+事件委托
+
+es6 & es6+
+esm和CommonJS module区别
+
+get & post 区别
+http & websocket
+http状态码
+跨域
+https
+http2
+http keep-alive
+TCP UDP TCP
+怎么防止篡改参数？
+三次握手，四次挥手
+
+浏览器缓存
+输入url到页面出现
+浏览器渲染过程
+rePaint reFlow
+webWorker
+
+web安全
