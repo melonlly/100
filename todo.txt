@@ -1,7 +1,0 @@
-https://zhuanlan.zhihu.com/p/27158983
-    Interactive computer graphics
-    The Art of 3D Computer Animation and Effects
-    http://www.opengl-tutorial.org/
-    https://www.learncpp.com/
-
-https://zhuanlan.zhihu.com/p/357265599

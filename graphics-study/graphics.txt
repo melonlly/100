@@ -1,0 +1,38 @@
+基础
+    Fundamentals of Computer Graphics
+    C++ Primer
+        如何学习C++ https://www.zhihu.com/question/32087709
+    
+零基础入门图形学 https://www.zhihu.com/question/41468803
+
+
+用C/C++写一个软件光栅化渲染器，
+    能正确渲染obj模型，Phong光照模型，有纹理，材质等功能，规模几百到几千行不等，
+    具体取决于你想实现多少效果，能实现体渲染，环境光遮蔽等比较时髦的效果就更好了。
+用C/C++写一个软件光线追踪渲染器，
+    能正确渲染obj模型，有纹理，材质等功能，有加速结构，能并行化。规模几百到几千行不等。
+
+
+
+
+https://zhuanlan.zhihu.com/p/27158983
+    Interactive computer graphics
+    http://www.opengl-tutorial.org/
+    https://www.learncpp.com/
+
+
+
+
+
+
+
+
+graphics
+    https://zhuanlan.zhihu.com/p/357265599
+    https://zhuanlan.zhihu.com/p/27158983
+    https://download.csdn.net/download/qq215444512/10964189?utm_medium=distribute.pc_relevant.none-task-download-2%7Edefault%7EBlogCommendFromMachineLearnPai2%7Edefault-5.control&depth_1-utm_source=distribute.pc_relevant.none-task-download-2%7Edefault%7EBlogCommendFromMachineLearnPai2%7Edefault-5.control
+    http://games-cn.org/
+    http://www.smartchair.org/session/portal/
+    http://games-cn.org/forums/topic/allhw/
+    https://zhuanlan.zhihu.com/p/259208999
+    http://games-cn.org/forums/forum/graphics-intro/
