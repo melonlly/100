@@ -1,0 +1,67 @@
+<html>
+    <body>
+        <!--
+            css盒模型
+            基于盒模型，解释相对定位、绝对定位、浮动是如何实现的？
+            文档流 / 文本流 ？
+            BFC / IFC ？
+
+            css盒模型
+                w3c盒模型（由内到外）：content + border + padding + margin
+                IE盒模型 与 标准盒模型
+                    唯一区别：内容计算方式不同
+                        IE盒模型，width = content + border + padding
+                        标准盒模型，width = content
+
+            相对定位（relative）
+                1.不脱离文档流
+                2.参考自身静态位置（盒模型位置）进行定位
+                3.可通过z-index进行分层
+            绝对定位（absolute）
+                1.脱离文档流，脱离文本流
+                2.相对于最近一个有定位属性的对象进行定位（若没有，则相对于body）
+                3.可通过z-index进行分层
+            浮动（float）
+                1.脱离文档流，不脱离文本流
+                2.其他元素在定位时，会忽略脱离文档流的所有元素
+            
+            文档流（Normal flow）
+                ※ 相对于盒子模型来讲的
+                指语言文本从左到右，从上到下显示，这是传统HTML文档的文本布局
+                css中定位的一种默认情况，平时我们所说的BFC、IFC等都是 Normal flow 的情况下的规则
+            文本流（Text flow）
+                ※ 相对于文字段落来讲的
+                BFC规则中，文本会围绕在浮动元素旁边。出现了这种现象，自定义了“文本流”的概念
+            float元素
+                会脱离 Normal flow，若float元素后面还有其他元素，会无视其占据的区域，在其下方布局
+                而文字会认同float元素的区域，并围绕其布局，也就是float元素没有脱离 Text flow
+            position中的 absolute 和 fixed
+                会完全脱离 Normal flow
+            
+            BFC（Block Formatting Context 块级格式化上下文）
+                css2提出，具有规定的渲染，定位等规则的块级元素（一种特殊的盒子，相对于普通盒子来说）
+            BFC布局规则：
+                1.内部的盒子，垂直方向布局
+                2.垂直方向的盒子上下margin会重叠
+                3.子BFC的区域不会与float box重叠
+                4.独立容器，容器里面的子元素不会影响到外面的元素，反之如此
+                5.计算BFC的高度时，浮动元素也参与计算（类似清除浮动的效果）
+            块级元素 -> BFC 条件：
+                1.具有除了float:none的其他浮动属性（浮动块元素）
+                2.绝对定位元素（absolute、fixed）
+                3.dispaly为block、inline-block、table-cell、table-caption、flex、inline-flex
+                4.overflow不为visible
+            为什么会有BFC？（BFC解决了一些什么问题？）
+                1.父子元素互相影响的问题（浮动元素引起父元素塌陷问题）
+                2.解决外边距垂直方向重合问题
+                3.两栏自适应布局
+            
+            IFC（Inline Formatting Context 内联格式化上下文）
+                块级元素中仅包含内联级别元素时，该块元素则是一个IFC
+            IFC解决的问题？
+                1.解决元素垂直居中
+                2.多个文本元素行高不一致排列混乱
+                ...
+        -->
+    </body>
+</html>

@@ -1,0 +1,102 @@
+<html>
+    <body>
+        <!--
+            屏幕正中间有个元素A，元素A中有文字A，随着屏幕宽度增加，始终满足如下条件：
+                1.A元素垂直居中与屏幕中间
+                2.A元素距离屏幕左右边距各10px
+                3.文字A font-size:20px; 且水平垂直居中
+                4.A元素的高度始终是A元素宽度的50%（如果搞不定，A元素可以高度可以固定为200px）
+            考察点：
+                1.块级元素水平垂直居中
+                2.边距固定
+                3.文本水平垂直居中
+                4.margin、padding 的百分比数值是相对父元素的宽度计算的
+        -->
+
+        <!--
+            position + transform 实现水平垂直居中
+            padding-top 实现高是宽的50%（使用margin会发生合并）
+                因为 margin、padding 的百分比数值是相对父元素的宽度计算的
+        -->
+        <style>
+            html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            .wrap-0 {
+                width: 200px;
+                height: 200px;
+                background-color: blue;
+                position: relative;
+                margin-bottom: 10px;
+            }
+            .wrap-0 .A {
+                font-size: 20px;
+                text-align: center;
+                background-color: yellowgreen;
+                position: absolute;
+                top: 50%;
+                left: 10px;
+                right: 10px;
+                transform: translate(0, -50%);
+                padding-top: 50%;
+            }
+            .wrap-0 .f {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+            }
+        </style>
+        <div class="wrap-0">
+            <div class="A">
+                <div class="f">A</div>
+            </div>
+        </div>
+
+        <!--
+            calc + vw
+        -->
+        <style>
+            .wrap-1 {
+                width: 200px;
+                height: 200px;
+                background-color: blue;
+                position: relative;
+                margin-bottom: 10px;
+            }
+            .wrap-1 .A {
+                margin: 0 10px;
+                text-align: center;
+                font-size: 20px;
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                width: calc(100vw - 20px);
+                height: calc(50vw - 10px);
+                line-height: calc(50vw - 10px);
+                background-color: aquamarine;
+            }
+        </style>
+        <!-- <div class="wrap-1">
+            <div class="A">
+                A
+            </div>
+        </div> -->
+
+        <!-- 
+            flex + 伪元素
+        -->
+        <style>
+            .wrap-2 {
+                width: 200px;
+                height: 200px;
+                background-color: blue;
+                position: relative;
+                margin-bottom: 10px;
+            }
+        </style>
+    </body>
+</html>

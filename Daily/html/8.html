@@ -1,0 +1,28 @@
+<html>
+  <body>
+    <!--
+        script 标签的 async 跟 defer 的区别？
+          async & defer
+            浏览器在解析HTML时，如果遇到<script>时，会停止页面渲染，去下载和执行js，直至完成后，才会继续执行页面渲染。
+            停止渲染这段时间，会导致白屏现象，为此，ECMA定义了 async 和 defer 来控制 JS 的下载和执行。
+          defer
+            设置 defer 属性的script，浏览器将立即下载，但延迟执行。
+            理论上，多个 defer 脚本，在 DOMContentLoaded 之前，将依次执行。
+            实际上，defer 脚本不一定在 DOMContentLoaded 之前执行，执行顺序也不一定是定义的顺序。（最好一个页面只定一个 defer 脚本）
+          async
+            与 defer 类似，但只适用于外部文件（有src属性的文件），且不保证先后顺序执行。
+
+        async & defer 相同点
+          1.加载不阻塞页面渲染
+          2.对于inline的script无效
+          3.使用这两个属性的脚本中不能使用操作 document 的方法
+          4.都有onload事件回调
+
+        async & defer 不同点
+          1.发布时间不同
+          2.浏览器支持不同
+          3.执行顺序不同
+          4.同时包含 defer 和 async 的script标签，只会触发async，不会触发defer
+    -->
+  </body>
+</html>

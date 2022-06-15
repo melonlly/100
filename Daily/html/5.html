@@ -1,0 +1,18 @@
+<html>
+  <body>
+    <!--
+        a标签默认事件禁掉之后，如何实现跳转？
+            通过 location.href 实现跳转
+    -->
+    <a href="javascript:;">a-link</a>
+    <script>
+      const aArr = document.getElementsByTagName("a");
+      [...aArr].forEach((a) => {
+        // 注意！：不能使用箭头函数
+        a.addEventListener("click", function () {
+          location.href = this.href;
+        });
+      });
+    </script>
+  </body>
+</html>

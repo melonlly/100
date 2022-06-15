@@ -1,0 +1,26 @@
+<html>
+    <body>
+        <!--
+            说一下减少 dom 数量的办法？
+            如何一次性处理大量 dom？ 如何优化？
+
+            减少DOM数量？
+                1.伪元素
+                2.按需加载（动态加载）
+                3.语义化dom结构，减少无效层级
+            
+            大量dom节点优化？
+                为什么要优化？ - 对dom元素进行访问和操作时，会引起重绘和重排，比较消耗性能。
+                优化方式：
+                    1.缓存dom对象
+                        尤其是存在循环遍历节点的情况时
+                    2.文档片段
+                        document.createDocumentFragment() 创建的是虚拟节点对象
+                    3.用 innerHTML 代替 appendChild
+                    4.批量读写dom节点
+                        使用 requestAnimationFrame()，把任何导致重绘的操作放入 requestAnimationFrame
+                    5.虚拟dom
+                        dom对象转换成js对象，操作起来会更高效（每个dom节点相关的key是非常多的）
+        -->
+    </body>
+</html>

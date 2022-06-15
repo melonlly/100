@@ -1,10 +1,11 @@
 {
   "name": "melon-scp",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "",
   "main": "./lib/index.js",
   "scripts": {
-    "scp": "melon-scp renbao"
+    "scp": "melon-scp custom -ip 1.2.3.4 -u root -p 123456 -s D:/1/2/3 -t /1/2/3",
+    "help": "melon-scp custom --help"
   },
   "bin": {
     "melon-scp": "./bin/index.js"

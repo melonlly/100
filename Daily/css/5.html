@@ -1,0 +1,75 @@
+<html>
+    <body>
+        <!--
+            div宽度自适应，宽高等比缩放
+        -->
+        <style>
+            .container {
+                width: 50%;
+                height: 50%;
+            }
+        </style>
+        <!-- 
+            vw/vh ？？？
+                优点：简洁方便
+                缺点：兼容性
+         -->
+        <!-- <style>
+            .square-0 {
+                width: 10%;
+                height: 10vh;
+                background: red;
+            }
+        </style>
+        <div class="square-0"></div> -->
+
+        <!--
+            padding实现
+                原理：margin、padding的百分比数值是相对父元素的宽度计算的，只需将元素垂直方向的一个padding设置与width相同
+                优点：简单，兼容性好
+                缺点：max-height失效
+        -->
+        <style>
+            .square-1 {
+                height: 0; /* 防止内容占据高度 */
+                width: 10%;
+                padding-bottom: 10%;
+                background: red;
+                max-height: 10px; /* 失效 */
+            }
+        </style>
+        <div class="square-1">123232131</div>
+
+        <!--
+            利用伪元素的 margin/padding-top
+                上个例子中的 max-height 失效的原因是：max-height属性只限制于height（只对content起作用）
+                解决：用子元素撑开content部分，使max-height生效
+                （相较于上一个例子）
+                优点：解决了max-height的问题
+                缺点：不能有内容（内容会占据高度，导致变高）
+        -->
+        <style>
+            .square-2 {
+                width: 10%;
+                /*
+                    触发BFC，防止margin合并
+                    若使用padding-top，则不需要触发BFC
+                */
+                overflow: hidden;
+                background: yellowgreen;
+                /* 有效
+                max-height: 30px;
+                */
+            }
+            .square-2:after {
+                content: '';
+                display: block;
+                margin-top: 100%;
+                /*
+                padding-top: 100%;
+                */
+            }
+        </style>
+        <div class="square-2"></div>
+    </body>
+</html>

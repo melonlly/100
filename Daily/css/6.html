@@ -1,0 +1,41 @@
+<html>
+    <body>
+        <!--
+            ul 内部除最后一个 li 以外设置右边框效果
+        -->
+        <style>
+            ul li {
+                width: 100px;
+            }
+            /* 1. last-child */
+            ul li {
+                border-right: 5px solid blue;
+            }
+            ul li:last-child {
+                border-right: unset;
+            }
+            
+            /* 2. nth-last-of-type / nth-last-child */
+            ul li {
+                border-right: 5px solid blue;
+            }
+            ul li:nth-last-of-type(1) {
+                border-right: unset;
+            }
+            /* 或者 */
+            ul li:nth-last-child(1) {
+                border-right: unset;
+            }
+
+            /* 3. not + last-child */
+            ul li:not(:last-child) {
+                border-right: 5px solid blue;
+            }
+        </style>
+        <ul>
+            <li>111</li>
+            <li>222</li>
+            <li>333</li>
+        </ul>
+    </body>
+</html>
